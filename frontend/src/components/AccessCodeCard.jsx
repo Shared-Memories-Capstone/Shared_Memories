@@ -2,8 +2,9 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import DragDrop from './DragDrop';
 
+  // defaulting to guest for now before forcing name adds
 function AccessCodeCard({name = "Guest", event = "Place Holder Event..."}) {
-  // defaulting to gues for now before forcing name adds
+
 
   return (
     <Card className="text-center">

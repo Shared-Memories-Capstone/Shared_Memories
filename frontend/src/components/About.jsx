@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 
+// Basic About page
 function About() {
   return (
     <Container className='about-page'>
