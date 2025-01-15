@@ -13,3 +13,4 @@
 1. `git branch` - see what branch you are currently on
 2. `git checkout {branch_name}` - move to another branch
 3. `git checkout -b {new_branch_name}` - create and move to a new branch
+4. `git remote -v` - see your remote fetch and push locations
