@@ -12,7 +12,7 @@
 2. Get React/Vite spun up: (from frontend dir)
   - `npm install` (install dependencies)
   - `npm run dev` (run frontend)
-  - hit `http://127.0.0.1:8000` in browser to see admin UI
+  - hit `http://localhost:5173/` in browser to see admin UI
 
 - GIT AID -
 1. `git branch` - see what branch you are currently on
