@@ -9,15 +9,20 @@ function Header() {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand href="#home">Shared Memories</Navbar.Brand>
+      <Navbar.Brand as={NavLink} to='/'>
+      Shared Memories
+      </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to='/' end>Home</Nav.Link>
-            <Nav.Link as={NavLink} to='/About' end>About</Nav.Link>
+            <Nav.Link as={NavLink} to='/about' end>About</Nav.Link>
             <NavDropdown title="Features" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#upload">Upload</NavDropdown.Item>
-              <NavDropdown.Item href="#view-gallery">
+              <NavDropdown.Item as={NavLink} to='/upload' end>
+               Upload
+              </NavDropdown.Item>
+
+              <NavDropdown.Item as={NavLink} to='/CarouselExample' end>
                 View Gallery
               </NavDropdown.Item>
               <NavDropdown.Divider />
