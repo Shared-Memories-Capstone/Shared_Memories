@@ -16,10 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from api.views import test_view
+
 
 urlpatterns = [
     path("admin/", admin.site.urls), 
-    path("test/", test_view, name="test") # this is the new path we added and is what React is calling to
+    path("test/", test_view, name="test"),  # this is the new path we added and is what React is calling to
+    path("api/", include('api.urls')),
 ]
