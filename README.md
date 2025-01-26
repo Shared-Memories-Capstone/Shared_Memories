@@ -1,15 +1,21 @@
 # Shared_Memories
 ---
-1. Create your venv folder and activate it:
+1. Checkout the repository:
+  - `git clone git@github.com:Shared-Memories-Capstone/Shared_Memories.git`
+
+2. Create your venv folder in the backend dir and activate it:
   - `python3 -m venv venv`
   - `source venv/bin/activate` (mac)
+  
+3. Install Python requirements in virtual environment (from backend dir):
+  - `pip install -r requirements.txt`
 
-2. Get Django spun up: (from backend dir)
+4. Get Django spun up: (from backend dir)
   - `python manage.py migrate` (run initial migration)
   - `python manage.py runserver` (run backend)
   - hit `http://127.0.0.1:8000` in browser to see admin UI
 
-2. Get React/Vite spun up: (from frontend dir)
+5. Get React/Vite spun up: (from frontend dir)
   - `npm install` (install dependencies)
   - `npm run dev` (run frontend)
   - hit `http://localhost:5173/` in browser to see admin UI
