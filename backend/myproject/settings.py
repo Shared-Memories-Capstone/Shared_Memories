@@ -33,6 +33,12 @@ CORS_ALLOWED_ORIGINS = [
 ]  # this is the port that React is running on and is what we are allowing to access our API
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "api",
     "corsheaders",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
