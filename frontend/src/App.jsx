@@ -5,8 +5,6 @@ import About from './components/About.jsx'
 import CarouselExample from './components/CarouselExample.jsx'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
 import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 
