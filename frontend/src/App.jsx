@@ -24,6 +24,7 @@ function App() {
 
         <Route path='/CarouselExample' element={<CarouselExample/>} />
 
+        <Route path='/api-doc' element={<SwaggerUI url="http://127.0.0.1:8000/static/openapi.yaml" />} />
       </Routes>
     </Router>
   )
