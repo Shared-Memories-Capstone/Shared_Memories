@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info: 
+  title: "Shared Memories REST API"
+  description: >
+    This API allows the uploading of images to a gallery and
+    requesting a collection of image from an event or a single
+    photo.
+  version: 0.0.1
+paths: 
+  /gallery/{access_code}:
+    get:
+      summary: "List event information"
+      description: "Retrieves the information associated with the event."
+      parameters:
+        - name: 'access_code'
+          in: …
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  name:
+                    type: 'string'
+                  date:
+                    type: 'string'
+                  description:
+                    type: 'string'
+                  access_code:
+                    type: 'string'
+                  
