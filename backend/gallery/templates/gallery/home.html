@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Shared Memories{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h1 class="display-4 font-weight-bold mb-4">Unlock the Memories</h1>
+    <form action="{% url 'gallery:home' %}" method="POST" id="access-code-form" class="mx-auto">
+      <div class="form-group">
+        <label for="access-code-input" class="h5">Enter Your Code</label>
+        {{ form.access_code }}
+        {% for error in form.access_code.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-block mt-3">Enter</button>
+    </form>
+  </div>
+{% endblock %}
