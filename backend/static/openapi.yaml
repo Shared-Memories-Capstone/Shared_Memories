@@ -18,6 +18,8 @@ tags:
     description: Manage events
   - name: photos
     description: Upload and retrieve photos
+  - name: gallery
+    description: Retrieve event information and photos
 paths:
   /items:
     get:
@@ -201,6 +203,29 @@ paths:
                 $ref: '#/components/schemas/photo'
         '400':
           description: Invalid input
+  /gallery/{access_code}:
+    get:
+      tags:
+        - gallery
+      summary: Retrieve a gallery by access code
+      description: Retrieve event information and photos of a specific event using its access code.
+      parameters:
+        - name: access_code
+          in: path
+          required: true
+          schema:
+            type: string
+            format: int32
+            maxLength: 6
+      responses:
+        '200':
+          description: Event details and list of photos retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gallery'
+        '404':
+          description: Gallery with access code not found
 components:
   schemas:
     item:
@@ -261,3 +286,17 @@ components:
         uploaded_by: "Michael"
         original_file_name: "DSCF9344.jpg"
         upload_timestamp: "2025-01-26T18:11:13.390Z"
+    gallery:
+      type: object
+      properties:
+        event_title:
+          type: string
+        event_date:
+          type: string
+          format: date
+        event_description:
+          type: string
+        event_photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/photo'
