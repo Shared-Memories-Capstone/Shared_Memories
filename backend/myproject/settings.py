@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "api",
     "corsheaders",
     "rest_framework",
+    "gallery.apps.GalleryConfig",
 ]
 
 MIDDLEWARE = [
