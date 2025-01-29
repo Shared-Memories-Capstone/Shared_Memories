@@ -23,6 +23,9 @@
 6. [Optional] Import sample data (from backend dir):
   - `sqlite3 db.sqlite3 < sample-data.sql` (insert sample data)
 
+7. Create Django Admin administrator account (from backend dir):
+  - `python manage.py createsuperuser` (follow prompts to create)
+
 - GIT AID -
 1. `git branch` - see what branch you are currently on
 2. `git checkout {branch_name}` - move to another branch
