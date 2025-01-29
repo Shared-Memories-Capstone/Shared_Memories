@@ -17,6 +17,7 @@ function Header() {
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to='/' end>Home</Nav.Link>
             <Nav.Link as={NavLink} to='/about' end>About</Nav.Link>
+            <Nav.Link as={NavLink} to='/api-doc' end>API</Nav.Link>
             <NavDropdown title="Features" id="basic-nav-dropdown">
               <NavDropdown.Item as={NavLink} to='/upload' end>
                Upload
