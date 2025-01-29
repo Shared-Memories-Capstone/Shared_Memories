@@ -6,7 +6,7 @@
 2. Create your venv folder in the backend dir and activate it:
   - `python3 -m venv venv`
   - `source venv/bin/activate` (mac)
-  
+
 3. Install Python requirements in virtual environment (from backend dir):
   - `pip install -r requirements.txt`
 
@@ -19,6 +19,9 @@
   - `npm install` (install dependencies)
   - `npm run dev` (run frontend)
   - hit `http://localhost:5173/` in browser to see admin UI
+
+6. [Optional] Import sample data (from backend dir):
+  - `sqlite3 db.sqlite3 < sample-data.sql` (insert sample data)
 
 - GIT AID -
 1. `git branch` - see what branch you are currently on
