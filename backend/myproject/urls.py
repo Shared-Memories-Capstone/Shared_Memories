@@ -21,10 +21,16 @@ from django.urls import path, include
 from api.views import test_view
 
 urlpatterns = [
-    path("admin/", admin.site.urls), 
+    path("admin/", admin.site.urls),
     path("test/", test_view, name="test"),  # this is the new path we added and is what React is calling to
     path('api/', include('api.urls')),
+    path('', include('gallery.urls')),
 ]
 
 if settings.DEBUG:
+    # Using the django.contrib.staticfiles app bypasses the CORS
+    # middleware so we don't install it and manually include a URL path
+    # for the static root.
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # Add a URL pattern to serve media files during development.
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
