@@ -20,6 +20,7 @@
   - `python manage.py migrate` (run initial migration)
   - `python manage.py runserver` (run backend)
   - hit `http://127.0.0.1:8000` in browser to see admin UI
+  - hint: run `python manage.py collectstatic` if django admin UI is missing css
 
 3. Create a superuser:
   - `python manage.py createsuperuser`
