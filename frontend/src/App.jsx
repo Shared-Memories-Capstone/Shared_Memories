@@ -28,7 +28,9 @@ function App() {
 
         <Route path='/newuser' element={<NewUser/>} />
 
-        <Route path='/api-doc' element={<SwaggerUI url="http://127.0.0.1:8000/static/openapi.yaml" />} />
+        <Route path='/api-doc' element={
+          <SwaggerUI url="http://localhost:8000/api/schema/" />
+        } />
       </Routes>
     </Router>
   )
