@@ -5,9 +5,7 @@ repos:
     rev: v5.0.0
     hooks:
     -   id: trailing-whitespace
-        exclude: '^(backend/static/admin/|backend/static/rest_framework/)'
     -   id: end-of-file-fixer
-        exclude: '^(backend/static/admin/|backend/static/rest_framework/)'
     -   id: check-yaml
 -   repo: local
     hooks:
