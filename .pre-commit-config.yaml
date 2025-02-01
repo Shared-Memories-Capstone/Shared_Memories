@@ -12,11 +12,11 @@ repos:
     -   id: check-added-large-files
 -   repo: local
     hooks:
-    -   id: coverage
-        name: Run Coverage
-        entry: cd backend && coverage run manage.py test && coverage report -m
-        language: python
-        files: .py$
+    -   id: test-backend
+        name: run tests on the backend
+        entry: bash -c 'cd backend && coverage run manage.py test && coverage report -m'
+        language: system
+        pass_filenames: false
   # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
 -   repo: https://github.com/psf/black-pre-commit-mirror
     rev: 24.8.0
