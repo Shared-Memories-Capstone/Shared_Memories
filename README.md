@@ -26,6 +26,9 @@
   - `npm run dev` (run frontend)
   - hit `http://localhost:5173/` in browser to see admin UI
 
+6. [Optional] Run tests and generate coverage report (from project root dir):
+  - `make test` (run manually)
+
 - GIT AID -
 1. `git branch` - see what branch you are currently on
 1. `git checkout {branch_name}` - move to another branch
