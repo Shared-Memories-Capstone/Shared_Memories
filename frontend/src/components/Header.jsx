@@ -35,7 +35,7 @@ function Header() {
                 View Gallery
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#create-event">
+              <NavDropdown.Item as={NavLink} to="/create-event">
                 Create Event
               </NavDropdown.Item>
             </NavDropdown>

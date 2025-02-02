@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api';
+export const API_URL = 'http://localhost:8000/api';
 
 export const verifyToken = async () => {
     const token = localStorage.getItem('token');
@@ -64,4 +64,8 @@ export const register = async (userData) => {
 export const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+};
+
+export const getAuthToken = () => {
+    return localStorage.getItem('token');
 }; 
