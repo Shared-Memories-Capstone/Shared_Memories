@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import EventViewSet, PhotoViewSet, login, register
+from .views import EventViewSet, PhotoViewSet, login, register, verify_token
 from rest_framework.routers import DefaultRouter
 
 
@@ -11,4 +11,5 @@ urlpatterns = [
     path("", include(router.urls)),  # Includes all API routes
     path("auth/login/", login, name="login"),
     path("auth/register/", register, name="register"),
+    path("auth/verify/", verify_token, name="verify-token"),
 ]
