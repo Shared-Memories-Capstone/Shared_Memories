@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from rest_framework import generics, viewsets
-from .serializers import ItemSerializer, EventSerializer
-from .models import Item, Event
+from rest_framework import viewsets
+from .serializers import EventSerializer, PhotoSerializer
+from .models import Event, Photo
 from django.http import JsonResponse
 
 
@@ -11,14 +11,16 @@ def test_view(request):
     return JsonResponse(data)
 
 
-class ItemListCreateView(generics.ListCreateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-
-
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+#  EventViewSet(viewsets.ModelViewSet)
+
+
+class PhotoViewSet(viewsets.ModelViewSet):
+    queryset = Photo.objects.all()
+    serializer_class = PhotoSerializer
+#  PhotoViewSet(viewsets.PhotoViewSet)
 
 
 
