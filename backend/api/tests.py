@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from .models import Event
+from .models import Event, Photo
 
 
 class EventModelTest(TestCase):
@@ -110,3 +110,56 @@ class EventModelTest(TestCase):
         event_id = event.event_id
         event.delete()
         self.assertFalse(Event.objects.filter(event_id=event_id).exists())
+
+
+class PhotoModelTest(TestCase):
+    @classmethod
+    def setUp(cls):
+        """Set up a test user, event, and photo."""
+        cls.user = get_user_model().objects.create_user(
+            username="testuser",
+            password="password123"
+        )
+        cls.event = Event.objects.create(
+            user_id=cls.user,
+            event_title="Concert",
+            event_description="A live music event.",
+            event_date="2025-07-20",
+            access_code="XYZ789"
+        )
+        cls.photo = Photo.objects.create(
+            event=cls.event,
+            uploaded_by="photographer_1",
+            original_file_name="concert_photo.jpg",
+            file_key="unique_file_key_789",
+            is_deleted=False
+        )
+
+    def test_photo_creation(self):
+        """Test that a photo object is created correctly."""
+        self.assertEqual(self.photo.original_file_name, "concert_photo.jpg")
+        self.assertEqual(self.photo.uploaded_by, "photographer_1")
+        self.assertEqual(self.photo.file_key, "unique_file_key_789")
+        self.assertFalse(self.photo.is_deleted)
+
+    def test_photo_str_method(self):
+        """Test the __str__ method returns the correct string."""
+        self.assertEqual(str(self.photo), "concert_photo.jpg")
+
+    def test_upload_timestamp_auto_now_add(self):
+        """Test that upload_timestamp is automatically set on creation."""
+        self.assertIsNotNone(self.photo.upload_timestamp)
+
+    def test_foreign_key_relationship(self):
+        """Test that the photo is correctly associated with the event."""
+        self.assertEqual(self.photo.event, self.event)
+
+    def test_is_deleted_default_value(self):
+        """Test that is_deleted defaults to False."""
+        new_photo = Photo.objects.create(
+            event=self.event,
+            uploaded_by="photographer_2",
+            original_file_name="event_picture.jpg",
+            file_key="unique_file_key_456"
+        )
+        self.assertFalse(new_photo.is_deleted)
