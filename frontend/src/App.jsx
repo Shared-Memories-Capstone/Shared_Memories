@@ -9,27 +9,33 @@ import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import LoginForm from './components/LoginForm.jsx';
 import NewUser from './components/NewUser.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function App() {
 
   return (
     <Router>
-      {/*Nav bar goes here */}
       <Header/>
 
       <Routes>
-        <Route path="/" element={<AccessCodeCard />}/>
-
-        <Route path='/about' element={<About />} />
-
+        {/* Public routes */}
         <Route path='/login' element={<LoginForm />} />
+        <Route path='/newuser' element={<NewUser />} />
 
-        <Route path='/CarouselExample' element={<CarouselExample/>} />
-
-        <Route path='/newuser' element={<NewUser/>} />
-
+        <Route path="/" element={
+            <AccessCodeCard />
+        }/>
+        <Route path='/about' element={
+            <About />
+        } />
+        <Route path='/CarouselExample' element={
+            <CarouselExample/>
+        } />
+       {/* Protected routes */}
         <Route path='/api-doc' element={
-          <SwaggerUI url="http://localhost:8000/api/schema/" />
+          <ProtectedRoute>
+            <SwaggerUI url="http://localhost:8000/api/schema/" />
+          </ProtectedRoute>
         } />
       </Routes>
     </Router>
