@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets
-from .serializers import ItemSerializer, EventSerializer
-from .models import Item, Event
+from .serializers import EventSerializer, PhotoSerializer
+from .models import Event, Photo
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -12,20 +12,14 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
 
 
-# Create your views here.
-def test_view(request):
-    data = {"new_count": 2}  # whenever this view is called, it will return this data
-    return JsonResponse(data)
-
-
-class ItemListCreateView(generics.ListCreateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-
-
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+
+class PhotoViewSet(viewsets.ModelViewSet):
+    queryset = Photo.objects.all()
+    serializer_class = PhotoSerializer
 
 
 @api_view(["POST"])
