@@ -1,13 +1,5 @@
 from rest_framework import serializers
-from .models import Item, Event
-
-
-class ItemSerializer(serializers.ModelSerializer):
-    """Template"""
-    class Meta:
-        model = Item
-        fields = '__all__'
-#  ItemSerializer(serializers.ModelSerializer):
+from .models import Event, Photo
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -16,3 +8,10 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
 #  EventSerializer(serializers.ModelSerializer)
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = '__all__'
+#  PhotoSerializer(serializers.ModelSerializer)
