@@ -10,6 +10,7 @@ import 'swagger-ui-react/swagger-ui.css';
 import LoginForm from './components/LoginForm.jsx';
 import NewUser from './components/NewUser.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import CreateEventForm from './components/CreateEventForm';
 
 function App() {
 
@@ -37,6 +38,14 @@ function App() {
             <SwaggerUI url="http://localhost:8000/api/schema/" />
           </ProtectedRoute>
         } />
+        <Route
+          path="/create-event"
+          element={
+            <ProtectedRoute>
+              <CreateEventForm />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   )
