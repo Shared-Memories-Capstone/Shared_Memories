@@ -10,6 +10,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
+from django.core.files.storage import default_storage
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -20,6 +21,31 @@ class EventViewSet(viewsets.ModelViewSet):
 class PhotoViewSet(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
+
+
+@api_view(["POST"])
+def upload_photo(request):
+    try:
+        image = request.FILES["image"]
+        event_id = request.POST["event"]
+        uploaded_by = request.POST["uploaded_by"]
+        original_file_name = request.POST["original_file_name"]
+
+        # Save the file
+        file_path = default_storage.save(f"photos/{image.name}", image)
+
+        # Create photo record
+        photo = Photo.objects.create(
+            event_id=event_id,
+            uploaded_by=uploaded_by,
+            original_file_name=original_file_name,
+            file_key=file_path,
+            image=file_path,
+        )
+
+        return Response({"status": "success", "photo_id": photo.photo_id})
+    except Exception as e:
+        return Response({"status": "error", "message": str(e)}, status=400)
 
 
 @api_view(["POST"])
