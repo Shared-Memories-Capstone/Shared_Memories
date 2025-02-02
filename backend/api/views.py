@@ -72,7 +72,5 @@ def register(request):
 @api_view(["GET"])
 def verify_token(request):
     if not request.auth:
-        return Response(
-            {"error": "No token provided"}, status=status.HTTP_401_UNAUTHORIZED
-        )
-    return Response({"valid": True})
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    return Response(status=status.HTTP_200_OK)
