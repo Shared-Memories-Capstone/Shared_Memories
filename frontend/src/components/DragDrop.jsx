@@ -13,8 +13,8 @@ function DragDrop({ eventId }) {
     
     const formData = new FormData();
     formData.append('image', file);
-    formData.append('event', 1);
-    formData.append('uploaded_by', 'User'); // You'll want to get this from your auth context
+    formData.append('event', 1); // for now we set 1 here just for testing, phase II will include event specific upload
+    formData.append('uploaded_by', 'User'); // for now we set User here, idk if we will even need uploaded_by or if we want it to be an ip address??
     formData.append('original_file_name', file.name);
 
     try {
