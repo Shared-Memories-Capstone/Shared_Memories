@@ -203,13 +203,13 @@ frontend-format:
 # ─────────────────────────────────────────────────────────────────
 # GLOBAL COMMANDS
 # ─────────────────────────────────────────────────────────────────
-setup: backend-install
-	@echo "Backend dependencies installed."
+setup: backend-install frontend-install
+	@echo "Backend and frontend dependencies installed."
 
-test: backend-test
-	@echo "Backend tests completed."
+test: backend-test frontend-test
+	@echo "Backend and frontend tests completed."
 
-clean: backend-clean
-	@echo "Cleaned backend environment."
+clean: backend-clean frontend-clean
+	@echo "Cleaned backend and frontend environments."
 
-all: clean backend-venv backend-install backend-migrate backend-test
+all: clean backend-venv backend-install backend-migrate backend-test frontend-install frontend-test
