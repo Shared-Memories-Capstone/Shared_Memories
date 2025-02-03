@@ -1,10 +1,24 @@
-# Project root directory (adjust if needed)
-PROJECT_ROOT := $(shell git rev-parse --show-toplevel)  # Get the project's root from Git
-VENV := $(PROJECT_ROOT)/backend/venv  # Default venv location for Python backend
-PYTHON := python3  # Used to create the virtual environment
-PIP := $(VENV)/bin/pip  # Virtual environment's pip
-DJANGO_MANAGE := $(VENV)/bin/python $(PROJECT_ROOT)/backend/manage.py
-COVERAGE := $(VENV)/bin/coverage  # Coverage tool
+# Detect OS (Windows or Unix-like)
+OS := $(shell uname -s 2>/dev/null || echo Windows)
+
+# Project root directory (works for Git Bash, MinGW, WSL, macOS, and Linux)
+PROJECT_ROOT := $(shell git rev-parse --show-toplevel)
+VENV := $(PROJECT_ROOT)/backend/venv
+
+# Adjust paths for Windows (use Scripts instead of bin)
+ifeq ($(OS), Windows)
+	PYTHON := python
+	PIP := $(VENV)/Scripts/pip
+	DJANGO_MANAGE := $(VENV)/Scripts/python $(PROJECT_ROOT)/backend/manage.py
+	COVERAGE := $(VENV)/Scripts/coverage
+	RM := rmdir /s /q
+else
+	PYTHON := python3
+	PIP := $(VENV)/bin/pip
+	DJANGO_MANAGE := $(VENV)/bin/python $(PROJECT_ROOT)/backend/manage.py
+	COVERAGE := $(VENV)/bin/coverage
+	RM := rm -rf
+endif
 
 # Always treat these names as Make commands
 .PHONY: all clean venv install migrate test runserver shell coverage coverage-html
@@ -13,7 +27,7 @@ all: clean venv install migrate test
 
 clean:
 	@echo "Removing existing virtual environment..."
-	rm -rf $(VENV)
+	-$(RM) $(VENV)
 
 venv:
 	@echo "Creating a new virtual environment..."
