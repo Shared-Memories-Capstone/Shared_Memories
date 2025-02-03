@@ -190,7 +190,7 @@ frontend-build:
 
 frontend-test:
 	@echo "Running frontend tests..."
-	@cd $(FRONTEND_DIR) && npm test
+	@cd $(FRONTEND_DIR) && npm test -- --watch=false
 
 frontend-lint:
 	@echo "Linting frontend code..."
