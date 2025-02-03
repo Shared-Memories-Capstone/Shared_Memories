@@ -25,24 +25,23 @@ class EventModelTest(TestCase):
             username="testuser",
             email="testuser@example.com",
             password="testpassword",
-        )
+        )  # nosec
         cls.second_user = get_user_model().objects.create(
             username="anotheruser",
             email="another@example.com",
             password="testpassword",
-        )
+        )  # nosec
 
     def test_event_creation(self):
         """Ensure retrieved events match their expected attributes."""
-        first_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Wes's 4th Birthday",
             event_date=datetime.date(2025, 1, 11),
             event_description="Brief event description.",
             access_code="abcdef",
         )
-
-        second_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Bob's Retirement Party",
             event_date=datetime.date(2023, 11, 17),
@@ -140,7 +139,7 @@ class PhotoModelTest(TestCase):
         """Set up a test user, event, and photo."""
         cls.user = get_user_model().objects.create_user(
             username="testuser", password="password123"
-        )
+        )  # nosec
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Concert",
