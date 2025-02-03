@@ -1,6 +1,7 @@
 import datetime
 import shutil
 import tempfile
+import unittest
 from django.conf import settings
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
@@ -259,6 +260,23 @@ class PhotoUploadTest(TestCase):
                 "uploaded_by": "John Doe",
                 "original_file_name": "test_image.jpg"
             }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["status"], "error")
+
+    @unittest.skip("Skipping because we aren't validating event IDs yet")
+    def test_invalid_event(self):
+        """Ensure that an upload with an invalid event ID fails."""
+        response = self.client.post(
+            self.upload_url,
+            {
+                "image": self.image,
+                "event": 99999,  # Non-existent event ID
+                "uploaded_by": "John Doe",
+                "original_file_name": "test_image.jpg"
+            },
+            format="multipart"
         )
 
         self.assertEqual(response.status_code, 400)
