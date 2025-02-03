@@ -150,6 +150,57 @@ backend-coverage-html: backend-coverage
 	@echo "Open htmlcov/index.html to view the report."
 
 # ─────────────────────────────────────────────────────────────────
+# FRONTEND COMMANDS
+# ─────────────────────────────────────────────────────────────────
+.PHONY: frontend-clean frontend-install frontend-start frontend-build frontend-test \
+        frontend-lint frontend-format
+
+frontend-clean:
+	@echo "Cleaning frontend dependencies and build files..."
+	@if [ -d "$(FRONTEND_DIR)/node_modules" ]; then \
+		echo "Removing node_modules..."; \
+		$(RM) "$(FRONTEND_DIR)/node_modules"; \
+	else \
+		echo "No node_modules directory found."; \
+	fi
+	@if [ -d "$(FRONTEND_DIR)/dist" ]; then \
+		echo "Removing frontend build files..."; \
+		$(RM) "$(FRONTEND_DIR)/dist"; \
+	else \
+		echo "No frontend build files found."; \
+	fi
+	@if [ -d "$(FRONTEND_DIR)/build" ]; then \
+		echo "Removing React build output..."; \
+		$(RM) "$(FRONTEND_DIR)/build"; \
+	else \
+		echo "No frontend build output found."; \
+	fi
+
+frontend-install:
+	@echo "Installing frontend dependencies..."
+	@cd $(FRONTEND_DIR) && npm install
+
+frontend-dev:
+	@echo "Starting frontend development server..."
+	@cd $(FRONTEND_DIR) && npm run dev
+
+frontend-build:
+	@echo "Building frontend for production..."
+	@cd $(FRONTEND_DIR) && npm run build
+
+frontend-test:
+	@echo "Running frontend tests..."
+	@cd $(FRONTEND_DIR) && npm test
+
+frontend-lint:
+	@echo "Linting frontend code..."
+	@cd $(FRONTEND_DIR) && npm run lint
+
+frontend-format:
+	@echo "Formatting frontend code..."
+	@cd $(FRONTEND_DIR) && npm run format
+
+# ─────────────────────────────────────────────────────────────────
 # GLOBAL COMMANDS
 # ─────────────────────────────────────────────────────────────────
 setup: backend-install
