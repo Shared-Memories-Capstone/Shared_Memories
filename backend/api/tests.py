@@ -186,7 +186,7 @@ class PhotoModelTest(TestCase):
 
 
 @override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class PhotoUploadTest(TestCase):
+class PhotoUploadTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         # Set up data for the whole TestCase
@@ -283,7 +283,7 @@ class PhotoUploadTest(TestCase):
         self.assertEqual(response.data["status"], "error")
 
 
-class LoginTest(TestCase):
+class LoginTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         """Set up a test user before each test."""
@@ -329,7 +329,7 @@ class LoginTest(TestCase):
         self.assertEqual(response.data["error"], "Invalid credentials")
 
 
-class RegisterTest(TestCase):
+class RegisterTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.valid_data = {
