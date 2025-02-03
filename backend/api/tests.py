@@ -25,12 +25,12 @@ class EventModelTest(TestCase):
             username="testuser",
             email="testuser@example.com",
             password="testpassword",
-        )
+        )  # nosec
         cls.second_user = get_user_model().objects.create(
             username="anotheruser",
             email="another@example.com",
             password="testpassword",
-        )
+        )  # nosec
 
     def test_event_creation(self):
         """Ensure retrieved events match their expected attributes."""
@@ -41,7 +41,6 @@ class EventModelTest(TestCase):
             event_description="Brief event description.",
             access_code="abcdef",
         )
-
         Event.objects.create(
             user_id=self.user,
             event_title="Bob's Retirement Party",
@@ -140,7 +139,7 @@ class PhotoModelTest(TestCase):
         """Set up a test user, event, and photo."""
         cls.user = get_user_model().objects.create_user(
             username="testuser", password="password123"
-        )
+        )  # nosec
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Concert",
@@ -195,7 +194,7 @@ class PhotoUploadTest(APITestCase):
             username="testuser",
             email="testuser@example.com",
             password="testpassword",
-        )
+        )  # nosec
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Wes's 4th Birthday",
@@ -373,7 +372,7 @@ class RegisterTest(APITestCase):
         """Test registration with an existing username should fail"""
         get_user_model().objects.create_user(
             username="testuser", password="securepassword", email="test@example.com"
-        )
+        )  # nosec
         response = self.client.post(self.register_url, self.valid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "Username already exists")
