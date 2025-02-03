@@ -2,7 +2,7 @@ import Header from './components/Header.jsx'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AccessCodeCard from './components/AccessCodeCard.jsx';
 import About from './components/About.jsx'
-import CarouselExample from './components/CarouselExample.jsx'
+import GalleryCarousel from './components/GalleryCarousel.jsx'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SwaggerUI from 'swagger-ui-react';
@@ -29,10 +29,11 @@ function App() {
         <Route path='/about' element={
             <About />
         } />
-        <Route path='/CarouselExample' element={
-            <CarouselExample/>
+        {/* Code and URL accessed Protected routes */}
+        <Route path='/GalleryCarousel' element={
+            <GalleryCarousel/>
         } />
-       {/* Protected routes */}
+       {/* Authorized Protected routes */}
         <Route path='/api-doc' element={
           <ProtectedRoute>
             <SwaggerUI url="http://localhost:8000/api/schema/" />

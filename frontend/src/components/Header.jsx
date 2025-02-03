@@ -31,7 +31,7 @@ function Header() {
               <NavDropdown.Item as={NavLink} to='/upload' end>
                 Upload
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to='/CarouselExample' end>
+              <NavDropdown.Item as={NavLink} to='/GalleryCarousel' end>
                 View Gallery
               </NavDropdown.Item>
               <NavDropdown.Divider />
