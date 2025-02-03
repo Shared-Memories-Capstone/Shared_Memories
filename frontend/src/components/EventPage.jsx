@@ -48,7 +48,7 @@ export default function EventPage() {
           {photos.map((photo, index) => (
             <MDBCol lg={4} md={6} sm={12} key={index} className="mb-4">
               <img
-                src={photo.url} 
+                src={photo.url}
                 className="w-100 shadow-1-strong rounded"
                 alt={photo.alt || `Event Image ${index + 1}`}
               />

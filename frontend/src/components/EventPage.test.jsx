@@ -46,13 +46,13 @@ describe('EventPage', () => {
 
   it('displays "No photos found" when no photos are returned', async () => {
     axios.get.mockResolvedValueOnce({ data: [] });
-    
+
     render(
       <MemoryRouter>
         <EventPage />
       </MemoryRouter>
     );
-    
+
     await waitFor(() => {
       expect(screen.getByText('No images found for this event.')).toBeInTheDocument();
     });
@@ -60,13 +60,13 @@ describe('EventPage', () => {
 
   it('displays photos when they are fetched successfully', async () => {
     axios.get.mockResolvedValueOnce({ data: mockPhotos });
-    
+
     render(
       <MemoryRouter>
         <EventPage />
       </MemoryRouter>
     );
-    
+
     await waitFor(() => {
       mockPhotos.forEach(photo => {
         expect(screen.getAllByRole('img')).toHaveLength(mockPhotos.length);
@@ -77,13 +77,13 @@ describe('EventPage', () => {
   it('makes API call with correct event ID', async () => {
     const eventId = 1;
     axios.get.mockResolvedValueOnce({ data: [] });
-    
+
     render(
       <MemoryRouter>
         <EventPage />
       </MemoryRouter>
     );
-    
+
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith(
         `http://localhost:8000/api/photos/?event=${eventId}`
@@ -94,18 +94,18 @@ describe('EventPage', () => {
   it('handles API error gracefully', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     axios.get.mockRejectedValueOnce(new Error('API Error'));
-    
+
     render(
       <MemoryRouter>
         <EventPage />
       </MemoryRouter>
     );
-    
+
     await waitFor(() => {
       expect(consoleError).toHaveBeenCalled();
       expect(screen.getByText('Error: API Error')).toBeInTheDocument();
     });
-    
+
     consoleError.mockRestore();
   });
-}); 
+});

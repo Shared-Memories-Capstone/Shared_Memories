@@ -19,14 +19,14 @@ describe('CreateEventForm', () => {
     // Mock localStorage
     const mockUser = { id: 1, username: 'testuser' };
     Storage.prototype.getItem = vi.fn(() => JSON.stringify(mockUser));
-    
+
     // Reset fetch mock
     window.fetch = vi.fn();
   });
 
   it('renders the form elements correctly', () => {
     render(<CreateEventForm />);
-    
+
     expect(screen.getByText('Create New Event')).toBeInTheDocument();
     expect(screen.getByLabelText('Event Title')).toBeInTheDocument();
     expect(screen.getByLabelText('Description')).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe('CreateEventForm', () => {
 
   it('handles input changes', async () => {
     render(<CreateEventForm />);
-    
+
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
     const dateInput = screen.getByLabelText('Event Date');
@@ -57,15 +57,15 @@ describe('CreateEventForm', () => {
     });
 
       render(<CreateEventForm />);
-      
+
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
     const dateInput = screen.getByLabelText('Event Date');
-    
+
     fireEvent.change(titleInput, { target: { value: 'Test Event' } });
     fireEvent.change(descriptionInput, { target: { value: 'Test Description' } });
     fireEvent.change(dateInput, { target: { value: '2024-12-31' } });
-    
+
     fireEvent.click(screen.getByRole('button', { name: 'Create Event' }));
 
     await waitFor(() => {
@@ -85,21 +85,21 @@ describe('CreateEventForm', () => {
   it('handles submission error', async () => {
     const mockError = 'Event creation failed';
     global.fetch.mockRejectedValueOnce(new Error(mockError));
-    
+
     // Mock console.error to prevent error output in tests
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(<CreateEventForm />);
-      
+
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
     const dateInput = screen.getByLabelText('Event Date');
-    
+
     fireEvent.change(titleInput, { target: { value: 'Test Event' } });
     fireEvent.change(descriptionInput, { target: { value: 'Test Description' } });
     fireEvent.change(dateInput, { target: { value: '2024-12-31' } });
-    
+
     fireEvent.click(screen.getByRole('button', { name: 'Create Event' }));
 
     await waitFor(() => {
@@ -109,4 +109,4 @@ describe('CreateEventForm', () => {
     consoleSpy.mockRestore();
     alertMock.mockRestore();
   });
-}); 
+});
