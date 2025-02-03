@@ -41,13 +41,13 @@ endif
 ifeq ($(OS), Windows)
 	PYTHON := python
 	PIP := $(VENV)/Scripts/pip
-	DJANGO_MANAGE := $(VENV)/Scripts/python $(PROJECT_ROOT)/backend/manage.py
+	DJANGO_MANAGE := $(PROJECT_ROOT)/backend/manage.py
 	COVERAGE := $(VENV)/Scripts/coverage
 	RM := rmdir /s /q
 else
 	PYTHON := python3
 	PIP := $(VENV)/bin/pip
-	DJANGO_MANAGE := $(VENV)/bin/python $(PROJECT_ROOT)/backend/manage.py
+	DJANGO_MANAGE := $(PROJECT_ROOT)/backend/manage.py
 	COVERAGE := $(VENV)/bin/coverage
 	RM := rm -rf
 endif
@@ -91,23 +91,23 @@ install: venv
 
 migrate:
 	@echo "Applying database migrations..."
-	@$(DJANGO_MANAGE) migrate
+	@$(VENV)/bin/python $(DJANGO_MANAGE) migrate
 
 test:
 	@echo "Running tests..."
-	@$(DJANGO_MANAGE) test
+	@$(VENV)/bin/python $(DJANGO_MANAGE) test
 
 runserver:
 	@echo "Starting the Django development server..."
-	@$(DJANGO_MANAGE) runserver
+	@$(VENV)/bin/python $(DJANGO_MANAGE) runserver
 
 shell:
 	@echo "Launching Django shell..."
-	@$(DJANGO_MANAGE) shell
+	@$(VENV)/bin/python $(DJANGO_MANAGE) shell
 
 coverage: install
 	@echo "Running tests with coverage tracking..."
-	@$(COVERAGE) run --source="$(PROJECT_ROOT)/backend" --omit='*/migrations/*' $(DJANGO_MANAGE) test
+	@cd backend && $(COVERAGE) run --source="$(PROJECT_ROOT)/backend" --omit='*/migrations/*' $(DJANGO_MANAGE) test
 	@$(COVERAGE) report -m
 
 coverage-html: coverage
