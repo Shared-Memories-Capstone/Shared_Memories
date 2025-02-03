@@ -54,8 +54,9 @@ const CreateEventForm = () => {
                         <h2>Create New Event</h2>
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className="mb-3">
-                                <Form.Label>Event Title</Form.Label>
+                                <Form.Label htmlFor="event_title">Event Title</Form.Label>
                                 <Form.Control
+                                    id="event_title"
                                     type="text"
                                     name="event_title"
                                     value={eventData.event_title}
@@ -66,8 +67,9 @@ const CreateEventForm = () => {
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Description</Form.Label>
+                                <Form.Label htmlFor="event_description">Description</Form.Label>
                                 <Form.Control
+                                    id="event_description"
                                     as="textarea"
                                     name="event_description"
                                     value={eventData.event_description}
@@ -78,8 +80,9 @@ const CreateEventForm = () => {
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Event Date</Form.Label>
+                                <Form.Label htmlFor="event_date">Event Date</Form.Label>
                                 <Form.Control
+                                    id="event_date"
                                     type="date"
                                     name="event_date"
                                     value={eventData.event_date}
