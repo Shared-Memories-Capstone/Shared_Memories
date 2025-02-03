@@ -12,7 +12,7 @@ repos:
 
   # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
 -   repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.8.0
+    rev: 25.1.0
     hooks:
     -   id: black
         # It is recommended to specify the latest version of Python
@@ -22,7 +22,7 @@ repos:
         language_version: python3
 
 -   repo: https://github.com/pycqa/flake8
-    rev: 7.1.0
+    rev: 7.1.1
     hooks:
     -   id: flake8
 
@@ -36,9 +36,9 @@ repos:
     hooks:
     -   id: eslint
         name: eslint
-        entry: npx eslint --fix
+        entry: cd frontend && npx eslint --fix
         language: system
-        types: [javascript, jsx]
+        types_or: [javascript, jsx]
     -   id: test-backend
         name: run tests on the backend
         entry: |
