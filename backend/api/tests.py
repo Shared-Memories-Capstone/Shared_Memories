@@ -117,22 +117,21 @@ class PhotoModelTest(TestCase):
     def setUp(cls):
         """Set up a test user, event, and photo."""
         cls.user = get_user_model().objects.create_user(
-            username="testuser",
-            password="password123"
+            username="testuser", password="password123"
         )
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Concert",
             event_description="A live music event.",
             event_date="2025-07-20",
-            access_code="XYZ789"
+            access_code="XYZ789",
         )
         cls.photo = Photo.objects.create(
             event=cls.event,
             uploaded_by="photographer_1",
             original_file_name="concert_photo.jpg",
             file_key="unique_file_key_789",
-            is_deleted=False
+            is_deleted=False,
         )
 
     def test_photo_creation(self):
@@ -160,6 +159,6 @@ class PhotoModelTest(TestCase):
             event=self.event,
             uploaded_by="photographer_2",
             original_file_name="event_picture.jpg",
-            file_key="unique_file_key_456"
+            file_key="unique_file_key_456",
         )
         self.assertFalse(new_photo.is_deleted)
