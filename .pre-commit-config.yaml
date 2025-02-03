@@ -5,7 +5,9 @@ repos:
     rev: v5.0.0
     hooks:
     -   id: trailing-whitespace
+        exclude: '^(backend/static/admin/|backend/static/rest_framework/)'
     -   id: end-of-file-fixer
+        exclude: '^(backend/static/admin/|backend/static/rest_framework/)'
     -   id: check-yaml
 
   # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
