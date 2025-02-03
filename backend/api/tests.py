@@ -12,6 +12,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 from PIL import Image
 from rest_framework import status
+from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from .models import Event, Photo
 
@@ -368,3 +369,23 @@ class RegisterTest(TestCase):
         response = self.client.post(self.register_url, incomplete_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
+
+
+class VerifyTokenTest(APITestCase):
+    @classmethod
+    def setUp(cls):
+        """Set up test user and authentication token."""
+        cls.user = get_user_model().objects.create_user(username="testuser", password="testpassword")  # nosec
+        cls.token, _ = Token.objects.get_or_create(user=cls.user)
+        cls.verify_url = reverse("verify-token")
+
+    def test_verify_token_unauthorized(self):
+        """Test that the endpoint returns 401 when no token is provided."""
+        response = self.client.get(self.verify_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_verify_token_authorized(self):
+        """Test that the endpoint returns 200 when a valid token is provided."""
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
+        response = self.client.get(self.verify_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
