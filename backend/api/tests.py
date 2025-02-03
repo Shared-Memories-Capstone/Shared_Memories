@@ -247,3 +247,17 @@ class PhotoUploadTest(TestCase):
         self.assertTrue(
             Photo.objects.filter(original_file_name="test_image.jpg").exists()
         )
+
+    def test_missing_image(self):
+        """Ensure that an upload without an image fails."""
+        response = self.client.post(
+            self.upload_url,
+            {
+                "event": self.event.event_id,
+                "uploaded_by": "John Doe",
+                "original_file_name": "test_image.jpg"
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["status"], "error")
