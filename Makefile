@@ -54,7 +54,6 @@ endif
 DJANGO_MANAGE := $(BACKEND_DIR)/manage.py
 
 # Ensure DJANGO_MANAGE exists
-# Ensure DJANGO_MANAGE exists
 ifeq ($(wildcard $(DJANGO_MANAGE)),)
 	$(error manage.py not found at $(DJANGO_MANAGE). Ensure the backend directory is correctly set up.)
 endif
@@ -89,7 +88,7 @@ endif
 # GENERAL CONFIGURATION
 # ─────────────────────────────────────────────────────────────────
 # Always treat these .PHONY names as Make commands
-.PHONY: all clean setup test-all clean-all
+.PHONY: all clean setup test
 
 # ─────────────────────────────────────────────────────────────────
 # BACKEND COMMANDS
@@ -149,3 +148,17 @@ backend-coverage-html: backend-coverage
 	@echo "Generating HTML coverage report..."
 	@$(COVERAGE) html
 	@echo "Open htmlcov/index.html to view the report."
+
+# ─────────────────────────────────────────────────────────────────
+# GLOBAL COMMANDS
+# ─────────────────────────────────────────────────────────────────
+setup: backend-install
+	@echo "Backend dependencies installed."
+
+test: backend-test
+	@echo "Backend tests completed."
+
+clean: backend-clean
+	@echo "Cleaned backend environment."
+
+all: clean backend-venv backend-install backend-migrate backend-test
