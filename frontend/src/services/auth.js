@@ -2,7 +2,7 @@ export const API_URL = 'http://localhost:8000/api';
 
 export const verifyToken = async () => {
     const token = localStorage.getItem('token');
-    if (!token) return false;
+    if (!token) {return false;}
 
     try {
         const response = await fetch(`${API_URL}/auth/verify/`, {
