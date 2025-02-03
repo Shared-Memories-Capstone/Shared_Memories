@@ -85,12 +85,19 @@ endif
 # Ensures make halts if an error occurs during execution
 .DELETE_ON_ERROR:
 
-# Always treat these names as Make commands
-.PHONY: all clean venv install migrate test runserver shell coverage coverage-html
+# ─────────────────────────────────────────────────────────────────
+# GENERAL CONFIGURATION
+# ─────────────────────────────────────────────────────────────────
+# Always treat these .PHONY names as Make commands
+.PHONY: all clean setup test-all clean-all
 
-all: clean venv install migrate test
+# ─────────────────────────────────────────────────────────────────
+# BACKEND COMMANDS
+# ─────────────────────────────────────────────────────────────────
+.PHONY: backend-clean backend-venv backend-install backend-migrate backend-test \
+        backend-runserver backend-shell backend-coverage backend-coverage-html
 
-clean:
+backend-clean:
 	@if [ -d "$(VENV)" ]; then \
 		echo "Removing existing virtual environment..."; \
 		$(RM) "$(VENV)"; \
@@ -98,7 +105,7 @@ clean:
 		echo "No virtual environment found."; \
 	fi
 
-venv:
+backend-venv:
 	@if [ ! -d "$(VENV)" ]; then \
 		echo "Creating a new virtual environment..."; \
 		$(PYTHON) -m venv "$(VENV)"; \
@@ -106,39 +113,39 @@ venv:
 		echo "Virtual environment already exists, skipping creation."; \
 	fi
 
-install: venv
+backend-install: backend-venv
 	@echo "Installing dependencies..."
 	@$(PIP) install --upgrade pip
 	@$(PIP) install -r "$(BACKEND_DIR)/requirements.txt"
 
-check_manage:
+backend-check_manage:
 	@if [ ! -f "$(DJANGO_MANAGE)" ]; then \
 		echo "Error: manage.py not found at $(DJANGO_MANAGE). Ensure the backend directory is correctly set up."; \
 		exit 1; \
 	fi
 
-migrate: check_manage
+backend-migrate: backend-check_manage
 	@echo "Applying database migrations..."
 	@$(RUN_DJANGO_MANAGE) migrate
 
-test: check_manage
+backend-test: backend-check_manage
 	@echo "Running tests..."
 	@cd $(BACKEND_DIR) && $(RUN_DJANGO_MANAGE) test
 
-runserver: check_manage
+backend-runserver: backend-check_manage
 	@echo "Starting the Django development server..."
 	@$(RUN_DJANGO_MANAGE) runserver
 
-shell: check_manage
+backend-shell: backend-check_manage
 	@echo "Launching Django shell..."
 	@$(RUN_DJANGO_MANAGE) shell
 
-coverage: install check_manage
+backend-coverage: backend-install backend-check_manage
 	@echo "Running tests with coverage tracking..."
 	@cd $(BACKEND_DIR) && $(COVERAGE) run --omit='*/migrations/*' $(DJANGO_MANAGE) test
 	@cd $(BACKEND_DIR) && $(COVERAGE) report -m
 
-coverage-html: coverage
+backend-coverage-html: backend-coverage
 	@echo "Generating HTML coverage report..."
 	@$(COVERAGE) html
 	@echo "Open htmlcov/index.html to view the report."
