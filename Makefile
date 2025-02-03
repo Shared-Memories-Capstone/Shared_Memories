@@ -30,24 +30,46 @@ else
 	$(error PROJECT_ROOT does not exist or is inaccessible.)
 endif
 
-VENV := $(PROJECT_ROOT)/backend/venv
+BACKEND_DIR := $(PROJECT_ROOT)/backend
 
-# Ensure VENV is inside PROJECT_ROOT
-ifneq ($(findstring $(PROJECT_ROOT),$(VENV)), $(PROJECT_ROOT))
-	$(error VENV is outside of PROJECT_ROOT, refusing to proceed.)
+# Ensure BACKEND_DIR is inside PROJECT_ROOT
+ifneq ($(findstring $(PROJECT_ROOT),$(BACKEND_DIR)), $(PROJECT_ROOT))
+	$(error BACKEND_DIR is outside of PROJECT_ROOT, refusing to proceed.)
+endif
+
+FRONTEND_DIR := $(PROJECT_ROOT)/frontend
+
+# Ensure FRONTEND_DIR is inside PROJECT_ROOT
+ifneq ($(findstring $(PROJECT_ROOT),$(FRONTEND_DIR)), $(PROJECT_ROOT))
+	$(error FRONTEND_DIR is outside of PROJECT_ROOT, refusing to proceed.)
+endif
+
+VENV := $(BACKEND_DIR)/venv
+
+# Ensure VENV is inside BACKEND_DIR
+ifneq ($(findstring $(BACKEND_DIR),$(VENV)), $(BACKEND_DIR))
+	$(error VENV is outside of BACKEND_DIR, refusing to proceed.)
+endif
+
+DJANGO_MANAGE := $(BACKEND_DIR)/manage.py
+
+# Ensure DJANGO_MANAGE exists
+# Ensure DJANGO_MANAGE exists
+ifeq ($(wildcard $(DJANGO_MANAGE)),)
+	$(error manage.py not found at $(DJANGO_MANAGE). Ensure the backend directory is correctly set up.)
 endif
 
 # Adjust paths for Windows (use Scripts instead of bin)
 ifeq ($(OS), Windows)
 	PYTHON := python
 	PIP := $(VENV)/Scripts/pip
-	DJANGO_MANAGE := $(PROJECT_ROOT)/backend/manage.py
+	RUN_DJANGO_MANAGE := $(VENV)/Scripts/python $(DJANGO_MANAGE)
 	COVERAGE := $(VENV)/Scripts/coverage
 	RM := rmdir /s /q
 else
 	PYTHON := python3
 	PIP := $(VENV)/bin/pip
-	DJANGO_MANAGE := $(PROJECT_ROOT)/backend/manage.py
+	RUN_DJANGO_MANAGE := $(VENV)/bin/python $(DJANGO_MANAGE)
 	COVERAGE := $(VENV)/bin/coverage
 	RM := rm -rf
 endif
@@ -87,28 +109,34 @@ venv:
 install: venv
 	@echo "Installing dependencies..."
 	@$(PIP) install --upgrade pip
-	@$(PIP) install -r "$(PROJECT_ROOT)/backend/requirements.txt"
+	@$(PIP) install -r "$(BACKEND_DIR)/requirements.txt"
 
-migrate:
+check_manage:
+	@if [ ! -f "$(DJANGO_MANAGE)" ]; then \
+		echo "Error: manage.py not found at $(DJANGO_MANAGE). Ensure the backend directory is correctly set up."; \
+		exit 1; \
+	fi
+
+migrate: check_manage
 	@echo "Applying database migrations..."
-	@$(VENV)/bin/python $(DJANGO_MANAGE) migrate
+	@$(RUN_DJANGO_MANAGE) migrate
 
-test:
+test: check_manage
 	@echo "Running tests..."
-	@$(VENV)/bin/python $(DJANGO_MANAGE) test
+	@cd $(BACKEND_DIR) && $(RUN_DJANGO_MANAGE) test
 
-runserver:
+runserver: check_manage
 	@echo "Starting the Django development server..."
-	@$(VENV)/bin/python $(DJANGO_MANAGE) runserver
+	@$(RUN_DJANGO_MANAGE) runserver
 
-shell:
+shell: check_manage
 	@echo "Launching Django shell..."
-	@$(VENV)/bin/python $(DJANGO_MANAGE) shell
+	@$(RUN_DJANGO_MANAGE) shell
 
-coverage: install
+coverage: install check_manage
 	@echo "Running tests with coverage tracking..."
-	@cd backend && $(COVERAGE) run --source="$(PROJECT_ROOT)/backend" --omit='*/migrations/*' $(DJANGO_MANAGE) test
-	@$(COVERAGE) report -m
+	@cd $(BACKEND_DIR) && $(COVERAGE) run --omit='*/migrations/*' $(DJANGO_MANAGE) test
+	@cd $(BACKEND_DIR) && $(COVERAGE) report -m
 
 coverage-html: coverage
 	@echo "Generating HTML coverage report..."
