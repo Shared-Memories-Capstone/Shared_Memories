@@ -139,22 +139,21 @@ class PhotoModelTest(TestCase):
     def setUp(cls):
         """Set up a test user, event, and photo."""
         cls.user = get_user_model().objects.create_user(
-            username="testuser",
-            password="password123"
+            username="testuser", password="password123"
         )
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Concert",
             event_description="A live music event.",
             event_date="2025-07-20",
-            access_code="XYZ789"
+            access_code="XYZ789",
         )
         cls.photo = Photo.objects.create(
             event=cls.event,
             uploaded_by="photographer_1",
             original_file_name="concert_photo.jpg",
             file_key="unique_file_key_789",
-            is_deleted=False
+            is_deleted=False,
         )
 
     def test_photo_creation(self):
@@ -182,7 +181,7 @@ class PhotoModelTest(TestCase):
             event=self.event,
             uploaded_by="photographer_2",
             original_file_name="event_picture.jpg",
-            file_key="unique_file_key_456"
+            file_key="unique_file_key_456",
         )
         self.assertFalse(new_photo.is_deleted)
 
@@ -201,7 +200,8 @@ class PhotoUploadTest(APITestCase):
             user_id=cls.user,
             event_title="Wes's 4th Birthday",
             event_date=datetime.date(2025, 1, 11),
-            event_description="Brief event description.",            access_code="abcdef",
+            event_description="Brief event description.",
+            access_code="abcdef",
         )
         cls.image = cls.create_test_image()
         cls.upload_url = reverse("upload_photo")
@@ -260,8 +260,8 @@ class PhotoUploadTest(APITestCase):
             {
                 "event": self.event.event_id,
                 "uploaded_by": "John Doe",
-                "original_file_name": "test_image.jpg"
-            }
+                "original_file_name": "test_image.jpg",
+            },
         )
 
         self.assertEqual(response.status_code, 400)
@@ -276,9 +276,9 @@ class PhotoUploadTest(APITestCase):
                 "image": self.image,
                 "event": 99999,  # Non-existent event ID
                 "uploaded_by": "John Doe",
-                "original_file_name": "test_image.jpg"
+                "original_file_name": "test_image.jpg",
             },
-            format="multipart"
+            format="multipart",
         )
 
         self.assertEqual(response.status_code, 400)
@@ -291,13 +291,19 @@ class LoginTest(APITestCase):
         """Set up a test user before each test."""
         cls.username = "testuser"
         cls.password = "securepassword"  # nosec
-        cls.user = get_user_model().objects.create_user(username=cls.username, password=cls.password)
+        cls.user = get_user_model().objects.create_user(
+            username=cls.username, password=cls.password
+        )
         cls.token, _ = Token.objects.get_or_create(user=cls.user)
         cls.login_url = reverse("login")
 
     def test_login_successful(self):
         """Test user can log in with valid credentials."""
-        response = self.client.post(self.login_url, {"username": self.username, "password": self.password}, format="json")
+        response = self.client.post(
+            self.login_url,
+            {"username": self.username, "password": self.password},
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("token", response.data)
         self.assertEqual(response.data["token"], self.token.key)
@@ -306,7 +312,11 @@ class LoginTest(APITestCase):
 
     def test_login_invalid_credentials(self):
         """Test login with incorrect credentials fails."""
-        response = self.client.post(self.login_url, {"username": self.username, "password": "wrongpassword"}, format="json")
+        response = self.client.post(
+            self.login_url,
+            {"username": self.username, "password": "wrongpassword"},
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn("error", response.data)
         self.assertEqual(response.data["error"], "Invalid credentials")
@@ -314,18 +324,26 @@ class LoginTest(APITestCase):
     @unittest.skip("Skipping because we are returning 401 instead of 400")
     def test_login_missing_username(self):
         """Test login without a username."""
-        response = self.client.post(self.login_url, {"password": self.password}, format="json")
+        response = self.client.post(
+            self.login_url, {"password": self.password}, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @unittest.skip("Skipping because we are returning 401 instead of 400")
     def test_login_missing_password(self):
         """Test login without a password."""
-        response = self.client.post(self.login_url, {"username": self.username}, format="json")
+        response = self.client.post(
+            self.login_url, {"username": self.username}, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_login_nonexistent_user(self):
         """Test login with a username that does not exist."""
-        response = self.client.post(self.login_url, {"username": "fakeuser", "password": "randompass"}, format="json")
+        response = self.client.post(
+            self.login_url,
+            {"username": "fakeuser", "password": "randompass"},
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn("error", response.data)
         self.assertEqual(response.data["error"], "Invalid credentials")
@@ -339,13 +357,13 @@ class RegisterTest(APITestCase):
             "password": "securepassword",  # nosec
             "email": "test@example.com",
             "firstName": "Test",
-            "lastName": "User"
+            "lastName": "User",
         }
         cls.register_url = reverse("register")
 
     def test_successful_registration(self):
         """Test if a new user can register successfully"""
-        response = self.client.post(self.register_url, self.valid_data, format='json')
+        response = self.client.post(self.register_url, self.valid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("token", response.data)
         self.assertIn("user_id", response.data)
@@ -353,8 +371,10 @@ class RegisterTest(APITestCase):
 
     def test_register_existing_username(self):
         """Test registration with an existing username should fail"""
-        get_user_model().objects.create_user(username="testuser", password="securepassword", email="test@example.com")
-        response = self.client.post(self.register_url, self.valid_data, format='json')
+        get_user_model().objects.create_user(
+            username="testuser", password="securepassword", email="test@example.com"
+        )
+        response = self.client.post(self.register_url, self.valid_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "Username already exists")
 
@@ -366,7 +386,7 @@ class RegisterTest(APITestCase):
             "username": "testuser2",
             "password": "securepassword",
         }
-        response = self.client.post(self.register_url, incomplete_data, format='json')
+        response = self.client.post(self.register_url, incomplete_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
 
@@ -375,7 +395,9 @@ class VerifyTokenTest(APITestCase):
     @classmethod
     def setUp(cls):
         """Set up test user and authentication token."""
-        cls.user = get_user_model().objects.create_user(username="testuser", password="testpassword")  # nosec
+        cls.user = get_user_model().objects.create_user(
+            username="testuser", password="testpassword"
+        )  # nosec
         cls.token, _ = Token.objects.get_or_create(user=cls.user)
         cls.verify_url = reverse("verify-token")
 
