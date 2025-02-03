@@ -173,4 +173,4 @@ cython_debug/
 .DS_Store
 
 # this is where the uploaded photos are stored
-media/ 
+media/
