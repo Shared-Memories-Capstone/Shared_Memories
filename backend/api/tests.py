@@ -56,6 +56,17 @@ class EventModelTest(TestCase):
         self.assertEqual(second_saved_event.event_description, "")
         self.assertEqual(second_saved_event.access_code, "fedcba")
 
+    def test_event_str_method(self):
+        """Test the __str__ method returns the correct string."""
+        event = Event.objects.create(
+            user_id=self.user,
+            event_title="Wes's 4th Birthday",
+            event_date=datetime.date(2025, 1, 11),
+            event_description="Brief event description.",
+            access_code="abcdef",
+        )
+        self.assertEqual(str(event), "Wes's 4th Birthday")
+
     def test_event_creation_without_required_fields(self):
         """Ensure that missing required fields raise an error."""
         with self.assertRaises(IntegrityError):
