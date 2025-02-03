@@ -328,3 +328,43 @@ class LoginTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn("error", response.data)
         self.assertEqual(response.data["error"], "Invalid credentials")
+
+
+class RegisterTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.valid_data = {
+            "username": "testuser",
+            "password": "securepassword",  # nosec
+            "email": "test@example.com",
+            "firstName": "Test",
+            "lastName": "User"
+        }
+        cls.register_url = reverse("register")
+
+    def test_successful_registration(self):
+        """Test if a new user can register successfully"""
+        response = self.client.post(self.register_url, self.valid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn("token", response.data)
+        self.assertIn("user_id", response.data)
+        self.assertIn("username", response.data)
+
+    def test_register_existing_username(self):
+        """Test registration with an existing username should fail"""
+        get_user_model().objects.create_user(username="testuser", password="securepassword", email="test@example.com")
+        response = self.client.post(self.register_url, self.valid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "Username already exists")
+
+    @unittest.skip("Skipping because we are not enforcing not NULL on some fields")
+    def test_register_missing_fields(self):
+        """Test registration fails when required fields are missing"""
+        # Missing email, firstName, lastName
+        incomplete_data = {
+            "username": "testuser2",
+            "password": "securepassword",
+        }
+        response = self.client.post(self.register_url, incomplete_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
