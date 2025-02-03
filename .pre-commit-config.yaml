@@ -31,14 +31,23 @@ repos:
     hooks:
     -   id: bandit
 
-    # Local hook for running backend tests
--   repo: local
+-   repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.19.0
     hooks:
     -   id: eslint
         name: eslint
-        entry: cd frontend && npx eslint --fix
-        language: system
+        entry: eslint --fix
+        language: node
+        additional_dependencies:
+        -   eslint@9.19.0
+        -   eslint-plugin-react@7.37.4
+        -   eslint-plugin-jsx-a11y@6.10.2
+        -   eslint-plugin-import@2.31.0
         types_or: [javascript, jsx]
+
+    # Local hook for running backend tests
+-   repo: local
+    hooks:
     -   id: test-backend
         name: run tests on the backend
         entry: |
