@@ -1,8 +1,16 @@
 import datetime
+import shutil
+import tempfile
+from django.conf import settings
 from django.db import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from io import BytesIO
+from PIL import Image
+from rest_framework import status
 from .models import Event, Photo
 
 
@@ -172,3 +180,70 @@ class PhotoModelTest(TestCase):
             file_key="unique_file_key_456",
         )
         self.assertFalse(new_photo.is_deleted)
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class PhotoUploadTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up data for the whole TestCase
+        cls.user = get_user_model().objects.create(
+            username="testuser",
+            email="testuser@example.com",
+            password="testpassword",
+        )
+        cls.event = Event.objects.create(
+            user_id=cls.user,
+            event_title="Wes's 4th Birthday",
+            event_date=datetime.date(2025, 1, 11),
+            event_description="Brief event description.",            access_code="abcdef",
+        )
+        cls.image = cls.create_test_image()
+        cls.upload_url = reverse("upload_photo")
+
+    @classmethod
+    def tearDownClass(cls):
+        """Remove test-created media files."""
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
+
+    @classmethod
+    def create_test_image(cls):
+        """Creates an in-memory test image using PIL."""
+        # Create a new image using PIL
+        image = Image.new("RGB", (100, 100), "red")
+        # Create a file-like object to write the image to
+        image_io = BytesIO()
+        # Save the image to the file-like object
+        image.save(image_io, format="JPEG")
+        # Reset the file pointer to the beginning
+        image_io.seek(0)
+        # Create an InMemoryUploadedFile from the image
+        image_file = InMemoryUploadedFile(
+            file=image_io,
+            field_name=None,
+            name="test_image.jpg",
+            content_type="image/jpeg",
+            size=image_io.tell(),
+            charset=None,
+        )
+        return image_file
+
+    def test_successful_photo_upload(self):
+        """Ensure photo upload is successful when valid data is received."""
+        response = self.client.post(
+            self.upload_url,
+            {
+                "image": self.image,
+                "event": self.event.event_id,
+                "uploaded_by": "Michael",
+                "original_file_name": "test_image.jpg",
+            },
+            format="multipart",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], "success")
+        self.assertTrue(
+            Photo.objects.filter(original_file_name="test_image.jpg").exists()
+        )
