@@ -3,6 +3,10 @@ OS := $(shell uname -s 2>/dev/null || echo Windows)
 
 # Project root directory (works for Git Bash, MinGW, WSL, macOS, and Linux)
 PROJECT_ROOT := $(shell git rev-parse --show-toplevel)
+ifeq ($(PROJECT_ROOT),)
+  $(error Failed to determine PROJECT_ROOT. Ensure this is a Git repository and 'git' is installed.)
+endif
+
 VENV := $(PROJECT_ROOT)/backend/venv
 
 # Adjust paths for Windows (use Scripts instead of bin)
