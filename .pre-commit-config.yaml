@@ -44,16 +44,3 @@ repos:
         -   eslint-plugin-jsx-a11y@6.10.2
         -   eslint-plugin-import@2.31.0
         types_or: [javascript, jsx]
-
-    # Local hook for running backend tests
--   repo: local
-    hooks:
-    -   id: test-backend
-        name: run tests on the backend
-        entry: |
-            python -c "
-            import sys, os
-            venv_path = 'backend/venv/Scripts/activate' if sys.platform == 'win32' else 'backend/venv/bin/activate'
-            os.system(f'source {venv_path} && cd backend && coverage run manage.py test && coverage report -m')"
-        language: system
-        pass_filenames: false
