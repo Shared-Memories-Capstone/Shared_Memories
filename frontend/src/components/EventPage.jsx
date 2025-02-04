@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // To get event ID from URL
+import { useSearchParams } from 'react-router-dom'; //  Get query string values
+import axios from 'axios'; //  Use axios for API request
 import {
   MDBContainer,
   MDBCol,
@@ -7,28 +8,30 @@ import {
 } from 'mdb-react-ui-kit';
 
 export default function EventPage() {
-  const { eventId } = useParams(); // Get event ID from URL params
-  const [images, setImages] = useState([]); // Store fetched images
+  const [searchParams] = useSearchParams(); //  Get query params from URL
+  const eventId = searchParams.get("event"); //  Extract `event` from query string
+
+  const [photos, setPhotos] = useState([]); //  Store fetched photos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchImages() {
+    const fetchPhotos = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/events/${eventId}/images/`); // Replace with your backend API URL
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!eventId) {
+          throw new Error("No event ID provided in query string.");
         }
-        const data = await response.json();
-        setImages(data); // Assuming the API returns an array of image objects
-      } catch (err) {
-        setError(err.message);
+        const response = await axios.get(`http://localhost:8000/api/photos/?event=${eventId}`);
+        setPhotos(response.data); //  Set photos from API response
+      } catch (error) {
+        console.error("Error fetching photos:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    fetchImages();
+    fetchPhotos();
   }, [eventId]);
 
   return (
@@ -37,15 +40,17 @@ export default function EventPage() {
 
       {loading && <p>Loading images...</p>}
       {error && <p className="text-danger">Error: {error}</p>}
-      
-      {!loading && !error && (
+
+      {!loading && !error && photos.length === 0 && <p>No images found for this event.</p>}
+
+      {!loading && !error && photos.length > 0 && (
         <MDBRow>
-          {images.map((image, index) => (
+          {photos.map((photo, index) => (
             <MDBCol lg={4} md={6} sm={12} key={index} className="mb-4">
               <img
-                src={image.url} // Make sure the backend sends the correct image URL
+                src={photo.url} 
                 className="w-100 shadow-1-strong rounded"
-                alt={image.alt || `Event Image ${index + 1}`}
+                alt={photo.alt || `Event Image ${index + 1}`}
               />
             </MDBCol>
           ))}
