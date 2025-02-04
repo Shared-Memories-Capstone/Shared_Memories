@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom'; //  Get query string values
 import axios from 'axios'; //  Use axios for API request
 import {
