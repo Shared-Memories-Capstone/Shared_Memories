@@ -19,7 +19,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
-    queryset = Photo.objects.all()
+    queryset = Photo.objects.filter(is_deleted=False)  # filter out deleted photos
     serializer_class = PhotoSerializer
 
 
