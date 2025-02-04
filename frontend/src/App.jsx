@@ -11,6 +11,8 @@ import LoginForm from './components/LoginForm.jsx';
 import NewUser from './components/NewUser.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import CreateEventForm from './components/CreateEventForm';
+import EventPage from './components/EventPage.jsx';
+
 
 function App() {
 
@@ -46,6 +48,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/event-page" element={<EventPage />} />
+
       </Routes>
     </Router>
   )
