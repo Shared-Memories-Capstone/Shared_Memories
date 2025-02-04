@@ -22,16 +22,16 @@ class EventModelTest(TestCase):
             username="testuser",
             email="testuser@example.com",
             password="testpassword",
-        )
+        )  # nosec
         cls.second_user = get_user_model().objects.create(
             username="anotheruser",
             email="another@example.com",
             password="testpassword",
-        )
+        )  # nosec
 
     def test_event_creation(self):
         """Ensure retrieved events match their expected attributes."""
-        first_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Wes's 4th Birthday",
             event_date=datetime.date(2025, 1, 11),
@@ -39,7 +39,7 @@ class EventModelTest(TestCase):
             access_code="abcdef",
         )
 
-        second_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Bob's Retirement Party",
             event_date=datetime.date(2023, 11, 17),
@@ -136,22 +136,21 @@ class PhotoModelTest(TestCase):
     def setUp(cls):
         """Set up a test user, event, and photo."""
         cls.user = get_user_model().objects.create_user(
-            username="testuser",
-            password="password123"
-        )
+            username="testuser", password="password123"
+        )  # nosec
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Concert",
             event_description="A live music event.",
             event_date="2025-07-20",
-            access_code="XYZ789"
+            access_code="XYZ789",
         )
         cls.photo = Photo.objects.create(
             event=cls.event,
             uploaded_by="photographer_1",
             original_file_name="concert_photo.jpg",
             file_key="unique_file_key_789",
-            is_deleted=False
+            is_deleted=False,
         )
 
     def test_photo_creation(self):
@@ -179,7 +178,7 @@ class PhotoModelTest(TestCase):
             event=self.event,
             uploaded_by="photographer_2",
             original_file_name="event_picture.jpg",
-            file_key="unique_file_key_456"
+            file_key="unique_file_key_456",
         )
         self.assertFalse(new_photo.is_deleted)
 
@@ -193,12 +192,13 @@ class PhotoUploadTest(TestCase):
             username="testuser",
             email="testuser@example.com",
             password="testpassword",
-        )
+        )  # nosec
         cls.event = Event.objects.create(
             user_id=cls.user,
             event_title="Wes's 4th Birthday",
             event_date=datetime.date(2025, 1, 11),
-            event_description="Brief event description.",            access_code="abcdef",
+            event_description="Brief event description.",
+            access_code="abcdef",
         )
         cls.image = cls.create_test_image()
         cls.upload_url = reverse("upload_photo")

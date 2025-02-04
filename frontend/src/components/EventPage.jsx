@@ -37,7 +37,7 @@ export default function EventPage() {
 
       {loading && <p>Loading images...</p>}
       {error && <p className="text-danger">Error: {error}</p>}
-      
+
       {!loading && !error && (
         <MDBRow>
           {images.map((image, index) => (
