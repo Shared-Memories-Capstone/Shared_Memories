@@ -8,7 +8,7 @@
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [Git Aid](#git-aid)
-- [Pre-Commit Hook Troubleshooting](#pre-commit)
+- [Pre-Commit Hook Troubleshooting](#pre-commit-hook-troubleshooting)
 - [Acknowledgements](#acknowledgements)
 
 ## Installation
