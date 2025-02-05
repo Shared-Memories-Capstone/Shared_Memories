@@ -12,35 +12,80 @@
 
 ## Installation
 
-1. Checkout the repository:
-  - `git clone git@github.com:Shared-Memories-Capstone/Shared_Memories.git`
-1. [Optional] Fetch a pull request:
-  - `git fetch origin pull/{pr_number}/head:{branch_name}`
-1. [Optional] Checkout a branch:
-  - `git checkout {branch_name}`
-1. Create your venv folder in the backend dir and activate it:
-  - `python3 -m venv venv`
-  - `source venv/bin/activate` (mac)
+1. Clone the repository:
+
+    ```bash
+    git clone git@github.com:Shared-Memories-Capstone/Shared_Memories.git
+    cd Shared_Memories
+    ```
+
+1. Create and activate a virtual environment (from backend dir):
+
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows, use venv\Scripts\activate
+    ```
+
 1. Install Python requirements in virtual environment (from backend dir):
-  - `pip install -r requirements.txt`
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
 1. Get Django spun up: (from backend dir)
-  - `python manage.py migrate` (run initial migration)
-  - `python manage.py runserver` (run backend)
-  - hit `http://127.0.0.1:8000` in browser to see admin UI
-  - hint: run `python manage.py collectstatic` if django admin UI is missing css
+
+    ```bash
+    python manage.py migrate  # Run intial migration
+    python manage.py runserver
+    ```
+
+    - hit `http://127.0.0.1:8000` in browser to see admin UI
+    - hint: run `python manage.py collectstatic` if django admin UI is missing css
+
 1. Create a superuser:
-  - `python manage.py createsuperuser`
-  - follow prompts to create a username, email, and password
-  - this creates a user that can access django admin UI
+
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+    - follow prompts to create a username, email, and password
+    - this creates a user that can access django admin UI
+
 1. Get React/Vite spun up: (from frontend dir)
-  - `npm install` (install dependencies)
-  - `npm run dev` (run frontend)
-  - hit `http://localhost:5173/` in browser to see admin UI
-1. [Optional] Run tests and generate coverage report (from project root dir):
-  - `make test` (run manually)
-1. [Optional] Enable automatic code review (from project root dir):
-  - `pre-commit install` (linters will run on your next commit)
-  - `pre-commit run --all-files` (see what the hooks will do before committing)
+
+    ```bash
+    npm install  # install dependencies
+    npm run dev  # run frontend
+    ```
+
+    - hit `http://localhost:5173/` in browser to see admin UI
+
+1. [Optional] Run tests (from project root dir):
+
+    ```bash
+    make test
+    ```
+
+1. [Optional] Enable automatic code review on commit (from project root dir):
+
+    ```bash
+    pre-commit install  # linters will run on your next commit
+    pre-commit run --all-files  # run the hooks manually on all files
+    ```
+
+## Contributing
+
+1. [Optional] Fetch a pull request:
+
+    ```bash
+    git fetch origin pull/{pr_number}/head:{branch_name}
+    ```
+
+1. [Optional] Checkout a branch:
+
+    ```bash
+    git checkout {branch_name}
+    ```
 
 ## GIT AID
 
