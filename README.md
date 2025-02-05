@@ -5,12 +5,13 @@
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Testing](#testing)
 - [Contributing](#contributing)
-- [Git Aid](#git)
+- [Git Aid](#git-aid)
 - [Pre-Commit Hook Troubleshooting](#pre-commit)
 - [Acknowledgements](#acknowledgements)
 
-## Installation
+## Installation {#installation}
 
 1. Clone the repository:
 
@@ -31,6 +32,14 @@
     ```bash
     pip install -r requirements.txt
     ```
+
+1. Install Node.js dependencies (from frontend dir):
+
+    ```bash
+    npm install  # install dependencies
+    ```
+
+## Usage {#usage}
 
 1. Get Django spun up: (from backend dir)
 
@@ -54,19 +63,46 @@
 1. Get React/Vite spun up: (from frontend dir)
 
     ```bash
-    npm install  # install dependencies
     npm run dev  # run frontend
     ```
 
     - hit `http://localhost:5173/` in browser to see admin UI
 
-## Contributing
+## Testing {#testing}
 
-1. Run tests (from project root dir):
+1. Test the backend:
 
     ```bash
-    make test
+    # run a specific test
+    python manage.py test api.tests.EventModelTest.test_event_creation
+    # run a test case class
+    python manage.py test api.tests.PhotoUploadTest
+    # run the apps test cases
+    python manage.py test api
+    # run all the tests detected
+    python manage.py test
     ```
+
+1. Generate coverage report (from backend dir):
+
+    ```bash
+    coverage run manage.py test
+    coverage report -m
+    ```
+
+1. Test the frontend:
+
+    ```bash
+    npm test  # run all the tests
+    ```
+
+1. Run all tests (from project root dir):
+
+    ```bash
+    make test  # run all of the backend and frontend tests
+    ```
+
+## Contributing {#contributing}
 
 1. Enable automatic code review on commit (from project root dir):
 
@@ -93,7 +129,7 @@
     git switch {branch_name}
     ```
 
-## GIT AID
+## GIT AID {#git-aid}
 
 1. `git branch` - see what branch you are currently on
 1. `git checkout {branch_name}` - move to another branch
@@ -105,7 +141,7 @@
 1. `git commit -m "{commit_message}"` - commit your changes
 1. `git push origin {branch_name}` - push your changes to the remote repository
 
-## Pre-Commit Hook Troubleshooting
+## Pre-Commit Hook Troubleshooting {#pre-commit}
 
 ### 1. Check if `pre-commit` is installed
 
@@ -177,6 +213,6 @@ If a hook is failing, check logs with:
 pre-commit run --verbose
 ```
 
-## Acknowledgements
+## Acknowledgements {#acknowledgements}
 
 Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
