@@ -34,7 +34,7 @@ class EventModelTest(TestCase):
 
     def test_event_creation(self):
         """Ensure retrieved events match their expected attributes."""
-        first_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Wes's 4th Birthday",
             event_date=datetime.date(2025, 1, 11),
@@ -42,7 +42,7 @@ class EventModelTest(TestCase):
             access_code="abcdef",
         )
 
-        second_event = Event.objects.create(
+        Event.objects.create(
             user_id=self.user,
             event_title="Bob's Retirement Party",
             event_date=datetime.date(2023, 11, 17),
