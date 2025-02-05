@@ -108,6 +108,7 @@
 ## Pre-Commit Hook Troubleshooting
 
 ### 1. Check if `pre-commit` is installed
+
 If pre-commit hooks aren't running, make sure it’s installed in your environment:
 ```bash
 pre-commit --version
@@ -118,12 +119,14 @@ pip install -r requirements.txt
 ```
 
 ### 2. Ensure pre-commit is installed in the repo
+
 If pre-commit hooks are not running automatically on commit, ensure it's installed in the repository:
 ```bash
 pre-commit install
 ```
 
 ### 3. Run all pre-commit hooks manually
+
 To check if pre-commit hooks are failing before committing:
 ```bash
 pre-commit run --all-files
@@ -131,18 +134,21 @@ pre-commit run --all-files
 This will manually trigger all hooks on all files.
 
 ### 4. Run pre-commit on changed files
+
 If you only want to check modified files:
 ```bash
 pre-commit run
 ```
 
 ### 5. Check installed hooks
+
 To see which hooks are installed:
 ```bash
 pre-commit list
 ```
 
 ### 6. Bypass pre-commit hooks (if necessary)
+
 If you need to commit but want to skip pre-commit hooks:
 ```bash
 git commit --no-verify
@@ -150,12 +156,14 @@ git commit --no-verify
 **Use this with caution**—bypassing pre-commit can lead to linting issues or unformatted code.
 
 ### 7. Update pre-commit hooks
+
 If pre-commit hooks are outdated or failing unexpectedly, update them:
 ```bash
 pre-commit autoupdate
 ```
 
 ### 8. Reinstall pre-commit hooks
+
 If hooks aren't working properly, try reinstalling:
 ```bash
 pre-commit clean
@@ -163,6 +171,7 @@ pre-commit install
 ```
 
 ### 9. Debug failing hooks
+
 If a hook is failing, check logs with:
 ```bash
 pre-commit run --verbose
