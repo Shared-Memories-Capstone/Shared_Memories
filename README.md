@@ -60,31 +60,37 @@
 
     - hit `http://localhost:5173/` in browser to see admin UI
 
-1. [Optional] Run tests (from project root dir):
+## Contributing
+
+1. Run tests (from project root dir):
 
     ```bash
     make test
     ```
 
-1. [Optional] Enable automatic code review on commit (from project root dir):
+1. Enable automatic code review on commit (from project root dir):
 
     ```bash
     pre-commit install  # linters will run on your next commit
+    ```
+
+1. Run pre-commit hooks manually (from project root dir):
+
+    ```bash
+    pre-commit run  # run the hooks manually on modified files
     pre-commit run --all-files  # run the hooks manually on all files
     ```
 
-## Contributing
-
-1. [Optional] Fetch a pull request:
+1. Fetch a pull request:
 
     ```bash
     git fetch origin pull/{pr_number}/head:{branch_name}
     ```
 
-1. [Optional] Checkout a branch:
+1. Checkout a branch:
 
     ```bash
-    git checkout {branch_name}
+    git switch {branch_name}
     ```
 
 ## GIT AID
