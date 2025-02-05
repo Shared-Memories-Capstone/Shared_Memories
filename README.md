@@ -11,7 +11,7 @@
 - [Pre-Commit Hook Troubleshooting](#pre-commit)
 - [Acknowledgements](#acknowledgements)
 
-## Installation {#installation}
+## Installation
 
 1. Clone the repository:
 
@@ -39,7 +39,7 @@
     npm install  # install dependencies
     ```
 
-## Usage {#usage}
+## Usage
 
 1. Get Django spun up: (from backend dir)
 
@@ -68,7 +68,7 @@
 
     - hit `http://localhost:5173/` in browser to see admin UI
 
-## Testing {#testing}
+## Testing
 
 1. Test the backend:
 
@@ -102,7 +102,7 @@
     make test  # run all of the backend and frontend tests
     ```
 
-## Contributing {#contributing}
+## Contributing
 
 1. Enable automatic code review on commit (from project root dir):
 
@@ -129,7 +129,7 @@
     git switch {branch_name}
     ```
 
-## GIT AID {#git-aid}
+## GIT AID
 
 1. `git branch` - see what branch you are currently on
 1. `git checkout {branch_name}` - move to another branch
@@ -141,7 +141,7 @@
 1. `git commit -m "{commit_message}"` - commit your changes
 1. `git push origin {branch_name}` - push your changes to the remote repository
 
-## Pre-Commit Hook Troubleshooting {#pre-commit}
+## Pre-Commit Hook Troubleshooting
 
 ### 1. Check if `pre-commit` is installed
 
@@ -213,6 +213,6 @@ If a hook is failing, check logs with:
 pre-commit run --verbose
 ```
 
-## Acknowledgements {#acknowledgements}
+## Acknowledgements
 
 Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
