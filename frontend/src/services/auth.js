@@ -2,7 +2,7 @@ export const API_URL = 'http://localhost:8000/api';
 
 export const verifyToken = async () => {
     const token = localStorage.getItem('token');
-    if (!token) return false;
+    if (!token) {return false;}
 
     try {
         const response = await fetch(`${API_URL}/auth/verify/`, {
@@ -25,11 +25,11 @@ export const login = async (username, password) => {
         },
         body: JSON.stringify({ username, password }),
     });
-    
+
     if (!response.ok) {
         throw new Error('Login failed');
     }
-    
+
     const data = await response.json();
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify({
@@ -47,11 +47,11 @@ export const register = async (userData) => {
         },
         body: JSON.stringify(userData),
     });
-    
+
     if (!response.ok) {
         throw new Error('Registration failed');
     }
-    
+
     const data = await response.json();
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify({
@@ -68,4 +68,4 @@ export const logout = () => {
 
 export const getAuthToken = () => {
     return localStorage.getItem('token');
-}; 
+};

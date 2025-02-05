@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { MemoryRouter } from 'react-router-dom'; 
+import { MemoryRouter } from 'react-router-dom';
 import NewUser from './NewUser';
 import { register } from '../services/auth';
-import { vi } from 'vitest'; 
+import { vi } from 'vitest';
 
 
 vi.mock('../services/auth', () => ({
@@ -15,10 +15,10 @@ const mockNavigate = vi.fn();
 
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom'); 
+  const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useNavigate: () => mockNavigate, 
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -67,7 +67,7 @@ describe('NewUser Component', () => {
   });
 
   test('calls register function and navigates on successful submission', async () => {
-    register.mockResolvedValueOnce(); 
+    register.mockResolvedValueOnce();
 
     render(
       <MemoryRouter>
@@ -91,7 +91,7 @@ describe('NewUser Component', () => {
       password: 'password123'
     }));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/'); 
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   test('displays error message when registration fails', async () => {

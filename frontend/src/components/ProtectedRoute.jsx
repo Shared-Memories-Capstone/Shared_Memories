@@ -31,4 +31,4 @@ ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired
 };
 
-export default ProtectedRoute; 
+export default ProtectedRoute;

@@ -29,8 +29,8 @@ function LoginForm() {
           <Form className="mt-5" onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
-              <Form.Control 
-                type="text" 
+              <Form.Control
+                type="text"
                 placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -39,8 +39,8 @@ function LoginForm() {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
+              <Form.Control
+                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
