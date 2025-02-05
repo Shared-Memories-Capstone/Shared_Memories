@@ -167,3 +167,7 @@ If a hook is failing, check logs with:
 ```bash
 pre-commit run --verbose
 ```
+
+## Acknowledgements
+
+Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
