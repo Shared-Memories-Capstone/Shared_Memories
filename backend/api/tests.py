@@ -410,3 +410,59 @@ class VerifyTokenTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
         response = self.client.get(self.verify_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class EventViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up user and test event with access code."""
+        cls.user = get_user_model().objects.create_user(
+            username="testuser", password="testpassword"
+        )  # nosec
+        cls.event = Event.objects.create(
+            user_id=cls.user,
+            event_title="Concert",
+            event_description="A live music event.",
+            event_date="2025-07-20",
+            access_code="456789",
+        )
+        cls.events_url = reverse("event-list")
+
+    def test_retrieve_event_valid_access_code(self):
+        """Test that the endpoint returns the correct event using an access code."""
+        response = self.client.get(
+            self.events_url,
+            query_params={"access_code": "456789"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("event", response.data)
+        event_data = response.data
+        self.assertEqual(event_data["event_id"], self.event.pk)
+        self.assertEqual(event_data["event_title"], self.event.event_title)
+        self.assertEqual(
+            event_data["event_description"],
+            self.event.event_description,
+        )
+        self.assertEqual(event_data["event_date"], self.event.event_date)
+        self.assertEqual(event_data["access_code"], self.event.access_code)
+        self.assertEqual(event_data["user_id"], self.user.pk)
+
+    def test_retrieve_event_no_access_code(self):
+        """Endpoint should return an error if no access_code is provided."""
+        response = self.client.get(
+            self.events_url,
+            query_params={"access_code": ""},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
+        self.assertEqual(response.data["error"], "Access code not provided")
+
+    def test_retrieve_event_invalid_access_code(self):
+        """Endpoint should return an error if an invalid access_code is provided."""
+        response = self.client.get(
+            self.events_url,
+            query_params={"access_code": "123456"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("error", response.data)
+        self.assertEqual(response.data["error"], "Event not found with access code")
