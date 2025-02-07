@@ -215,4 +215,4 @@ pre-commit run --verbose
 
 ## Acknowledgements
 
-Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
+Created by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
