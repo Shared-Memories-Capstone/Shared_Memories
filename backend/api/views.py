@@ -19,9 +19,17 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
-    queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
 
+    def get_queryset(self):
+        """Allow photos to be filtered by event_id"""
+        queryset = Photo.objects.all()
+        event_id = self.request.query_params.get('event_id')
+
+        if event_id:
+            queryset = queryset.filter(event__event_id=event_id)
+
+        return queryset
 
 @api_view(["POST"])
 def upload_photo(request):
