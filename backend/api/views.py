@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .serializers import EventSerializer, PhotoSerializer
 from .models import Event, Photo
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
@@ -14,6 +14,25 @@ from django.core.files.storage import default_storage
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path=r"by-access-code/(?P<access_code>[0-9A-Za-z]+)",
+        url_name="by-access-code",
+    )
+    def by_access_code(self, request, *args, **kwargs):
+        """Return a response with an event or 404 using the access code."""
+        # Change the name of the model field used to perform the lookup.
+        self.lookup_field = "access_code"
+        # Change the name of the keyword argument in the URL that holds the value for
+        # lookup.
+        self.lookup_url_kwarg = "access_code"
+        # Lookup the event using the access code.
+        event = self.get_object()  # returns 404 NOT FOUND if no events match
+        # Serialize the found event.
+        serializer = self.serializer_class(event)
+        return Response({"status": "success", "event": serializer.data})
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
