@@ -426,17 +426,19 @@ class EventViewTest(APITestCase):
             event_date="2025-07-20",
             access_code="456789",
         )
-        cls.events_url = reverse("event-list")
+        cls.valid_url = reverse(
+            "event-by-access-code", kwargs={"access_code": cls.event.access_code}
+        )
+        cls.nonexistent_access_code_url = reverse(
+            "event-by-access-code", kwargs={"access_code": "123456"}
+        )
 
     def test_retrieve_event_valid_access_code(self):
         """Test that the endpoint returns the correct event using an access code."""
-        response = self.client.get(
-            self.events_url,
-            query_params={"access_code": "456789"},
-        )
+        response = self.client.get(self.valid_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("event", response.data)
-        event_data = response.data
+        event_data = response.data["event"]
         self.assertEqual(event_data["event_id"], self.event.pk)
         self.assertEqual(event_data["event_title"], self.event.event_title)
         self.assertEqual(
@@ -447,22 +449,7 @@ class EventViewTest(APITestCase):
         self.assertEqual(event_data["access_code"], self.event.access_code)
         self.assertEqual(event_data["user_id"], self.user.pk)
 
-    def test_retrieve_event_no_access_code(self):
-        """Endpoint should return an error if no access_code is provided."""
-        response = self.client.get(
-            self.events_url,
-            query_params={"access_code": ""},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("error", response.data)
-        self.assertEqual(response.data["error"], "Access code not provided")
-
-    def test_retrieve_event_invalid_access_code(self):
-        """Endpoint should return an error if an invalid access_code is provided."""
-        response = self.client.get(
-            self.events_url,
-            query_params={"access_code": "123456"},
-        )
+    def test_retrieve_event_nonexistent_access_code(self):
+        """Endpoint should return an error if provided access_code doesn't exist'."""
+        response = self.client.get(self.nonexistent_access_code_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn("error", response.data)
-        self.assertEqual(response.data["error"], "Event not found with access code")
