@@ -410,3 +410,46 @@ class VerifyTokenTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
         response = self.client.get(self.verify_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class EventViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up user and test event with access code."""
+        cls.user = get_user_model().objects.create_user(
+            username="testuser", password="testpassword"
+        )  # nosec
+        cls.event = Event.objects.create(
+            user_id=cls.user,
+            event_title="Concert",
+            event_description="A live music event.",
+            event_date="2025-07-20",
+            access_code="456789",
+        )
+        cls.valid_url = reverse(
+            "event-by-access-code", kwargs={"access_code": cls.event.access_code}
+        )
+        cls.nonexistent_access_code_url = reverse(
+            "event-by-access-code", kwargs={"access_code": "123456"}
+        )
+
+    def test_retrieve_event_valid_access_code(self):
+        """Test that the endpoint returns the correct event using an access code."""
+        response = self.client.get(self.valid_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("event", response.data)
+        event_data = response.data["event"]
+        self.assertEqual(event_data["event_id"], self.event.pk)
+        self.assertEqual(event_data["event_title"], self.event.event_title)
+        self.assertEqual(
+            event_data["event_description"],
+            self.event.event_description,
+        )
+        self.assertEqual(event_data["event_date"], self.event.event_date)
+        self.assertEqual(event_data["access_code"], self.event.access_code)
+        self.assertEqual(event_data["user_id"], self.user.pk)
+
+    def test_retrieve_event_nonexistent_access_code(self):
+        """Endpoint should return an error if provided access_code doesn't exist'."""
+        response = self.client.get(self.nonexistent_access_code_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
