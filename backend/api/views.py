@@ -26,10 +26,11 @@ class PhotoViewSet(viewsets.ModelViewSet):
         queryset = Photo.objects.all()
         event_id = self.request.query_params.get('event_id')
 
-        if event_id:
+        if event_id:  # If event_id exists, return all photos associated with event_id
             queryset = queryset.filter(event__event_id=event_id)
-
-        return queryset
+            return queryset
+        else:
+            return "Error: Event could not be found."
 
 @api_view(["POST"])
 def upload_photo(request):

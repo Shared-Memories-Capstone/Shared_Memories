@@ -12,7 +12,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r"events", EventViewSet)
-router.register(r"photos", PhotoViewSet)
+router.register(r"photos", PhotoViewSet, basename='photos')
 
 urlpatterns = [
     path("", include(router.urls)),  # Includes all API routes
