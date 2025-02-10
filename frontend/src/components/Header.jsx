@@ -5,6 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { logout } from '../services/auth';
 
+
 // Basic Navbar, lead to different part of site
 function Header() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Header() {
                 Upload
               </NavDropdown.Item>
               <NavDropdown.Item as={NavLink} to='/CarouselExample' end>
-                View Gallery
+                View Test Gallery
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={NavLink} to="/create-event">
