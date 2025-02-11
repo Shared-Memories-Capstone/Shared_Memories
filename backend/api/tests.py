@@ -8,13 +8,14 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from io import BytesIO
 from PIL import Image
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
 from .models import Event, Photo
+import time
 
 
 class EventModelTest(TestCase):
@@ -453,3 +454,76 @@ class EventViewTest(APITestCase):
         """Endpoint should return an error if provided access_code doesn't exist'."""
         response = self.client.get(self.nonexistent_access_code_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class ImageBulkUploadTest(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.upload_url = "/api/upload-photo/"
+
+        self.user = get_user_model().objects.create(
+            username="testuser",
+            email="testuser@example.com",
+            password="testpassword",
+        )  # nosec
+        self.event = Event.objects.create(
+            user_id=self.user,
+            event_title="Wes's 4th Birthday",
+            event_date=datetime.date(2025, 1, 11),
+            event_description="Brief event description.",
+            access_code="abcdef",
+            event_id=1
+        )
+
+    def generate_test_image(self, name="test.jpg"):
+        """Creates a dummy image in memory."""
+        img = Image.new("RGB", (1920, 1080), color="red")  # Create a simple image
+        img_io = BytesIO()
+        img.save(img_io, format="JPEG")  # Save to in-memory file
+        img_io.seek(0)
+        return SimpleUploadedFile(name, img_io.read(), content_type="image/jpeg")
+
+    def generate_colored_test_image(self, name="test.jpg", size=(1920, 1080)):
+        """"""
+        width, height = size
+        image = Image.new("RGB",(1920, 1080))
+        pixels = image.load()
+
+        for x in range(width):
+            for y in range(height):
+                r = (x * 7) % 256  # Red varies based on x
+                g = (y * 9) % 256  # Green varies based on y
+                b = ((x + y) * 11) % 256  # Blue is a mix of both
+                pixels[x, y] = (r, g, b)
+
+        # Save image to in-memory file
+        img_io = BytesIO()
+        image.save(img_io, format="JPEG")  # Reduce file size with quality setting
+        img_io.seek(0)
+        return SimpleUploadedFile(name, img_io.read(), content_type="image/jpeg")
+
+    def test_upload_100_images(self):
+        """Measures the time to post 100 back-to-back to upload-photo."""
+        start_time = time.perf_counter()
+        for i in range(100):
+            image = self.generate_test_image(f"test_{i}.jpg")
+            #image = self.generate_colored_test_image(f"test_{i}.jpg")
+            response = self.client.post(
+                self.upload_url,
+                {"image": image,
+                      "event": 1, # need to create an event to go along with this, look at Mike's
+                      "uploaded_by": "Wes",
+                      "original_file_name":f"test_{i}.jpg"
+                      },
+                format="multipart"
+            )
+        end_time = time.perf_counter()
+        upload_time = end_time - start_time
+
+        photo_count = str(len(Photo.objects.all()))
+        # Assertions
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # Ensure upload is successful
+        print(f"Time taken to upload {photo_count} images: {upload_time:.6f} seconds")
+        print(response.json())
+        print(f"Number of Photos: {photo_count}")
+
