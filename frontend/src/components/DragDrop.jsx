@@ -10,7 +10,7 @@ function DragDrop({ eventId }) {
 
   const handleChange = async (file) => {
     setFile(file);
-    
+
     const formData = new FormData();
     formData.append('image', file);
     formData.append('event', 1); // for now we set 1 here just for testing, phase II will include event specific upload
