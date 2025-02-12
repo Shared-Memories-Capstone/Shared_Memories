@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import { logout } from '../services/auth';
 
 // Basic Navbar, lead to different part of site
@@ -17,30 +16,23 @@ function Header() {
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
+      <Container data-cy="header-container">
         <Navbar.Brand as={NavLink} to='/'>
           Shared Memories
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to='/' end>Home</Nav.Link>
             <Nav.Link as={NavLink} to='/about' end>About</Nav.Link>
             {/*this is a test to see if the event page work */}
-            <Nav.Link as={NavLink} to='/event-page' end>Event Page</Nav.Link>
+            <Nav.Link as={NavLink} to='/event-page' end>Gallery</Nav.Link>
             <Nav.Link as={NavLink} to='/api-doc' end>API</Nav.Link>
-            <NavDropdown title="Features" id="basic-nav-dropdown">
-              <NavDropdown.Item as={NavLink} to='/upload' end>
-                Upload
-              </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to='/CarouselExample' end>
-                View Gallery
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item as={NavLink} to="/create-event">
-                Create Event
-              </NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link as={NavLink} to='/upload' end>
+              Upload
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/create-event">
+              Create Event
+            </Nav.Link>
           </Nav>
           <Nav>
             {user ? (
