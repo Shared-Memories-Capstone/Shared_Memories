@@ -26,7 +26,7 @@ export default function EventPage() {
         // Fetch event details
         const eventResponse = await axios.get(`http://localhost:8000/api/events/${eventId}/`);
         setEvent(eventResponse.data);
-        
+
         // Fetch photos
         const photosResponse = await axios.get(`http://localhost:8000/api/photos/?event=${eventId}`);
         setPhotos(photosResponse.data);
@@ -70,8 +70,8 @@ export default function EventPage() {
                 src={photo.image_url}
                 className="w-100 shadow-1-strong rounded"
                 alt={photo.original_file_name}
-                style={{ 
-                  height: '300px', 
+                style={{
+                  height: '300px',
                   objectFit: 'cover',
                   cursor: 'pointer'
                 }}

@@ -36,4 +36,4 @@ describe('Header', () => {
     fireEvent.click(screen.getByText(/logout/i));
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
-}); 
+});

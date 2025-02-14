@@ -38,7 +38,7 @@ describe('EventPage', () => {
   it('shows loading state initially', async () => {
     // Mock API calls to return pending promises
     axios.get.mockImplementation(() => new Promise(() => {}));
-    
+
     render(<BrowserRouter><EventPage /></BrowserRouter>);
     await waitFor(() => {
       expect(screen.getByText(/loading event/i)).toBeInTheDocument();
@@ -67,9 +67,9 @@ describe('EventPage', () => {
 
   it('handles error state', async () => {
     axios.get.mockRejectedValueOnce(new Error('Failed to fetch'));
-    
+
     render(<BrowserRouter><EventPage /></BrowserRouter>);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/unable to load event content/i)).toBeInTheDocument();
     });

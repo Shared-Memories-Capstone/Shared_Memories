@@ -455,6 +455,7 @@ class EventViewTest(APITestCase):
         response = self.client.get(self.nonexistent_access_code_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+
 class ImageBulkUploadTest(APITestCase):
 
     def setUp(self):
@@ -472,7 +473,7 @@ class ImageBulkUploadTest(APITestCase):
             event_date=datetime.date(2025, 1, 11),
             event_description="Brief event description.",
             access_code="abcdef",
-            event_id=1
+            event_id=1,
         )
 
     def generate_test_image(self, name="test.jpg"):
@@ -486,7 +487,7 @@ class ImageBulkUploadTest(APITestCase):
     def generate_colored_test_image(self, name="test.jpg", size=(1920, 1080)):
         """"""
         width, height = size
-        image = Image.new("RGB",(1920, 1080))
+        image = Image.new("RGB", (1920, 1080))
         pixels = image.load()
 
         for x in range(width):
@@ -507,23 +508,25 @@ class ImageBulkUploadTest(APITestCase):
         start_time = time.perf_counter()
         for i in range(100):
             image = self.generate_test_image(f"test_{i}.jpg")
-            #image = self.generate_colored_test_image(f"test_{i}.jpg")
+            # image = self.generate_colored_test_image(f"test_{i}.jpg")
             response = self.client.post(
                 self.upload_url,
-                {"image": image,
-                      "event": 1, # need to create an event to go along with this, look at Mike's
-                      "uploaded_by": "Wes",
-                      "original_file_name":f"test_{i}.jpg"
-                      },
-                format="multipart"
+                {
+                    "image": image,
+                    "event": 1,  # need to create an event to go along with this, look at Mike's
+                    "uploaded_by": "Wes",
+                    "original_file_name": f"test_{i}.jpg",
+                },
+                format="multipart",
             )
         end_time = time.perf_counter()
         upload_time = end_time - start_time
 
         photo_count = str(len(Photo.objects.all()))
         # Assertions
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # Ensure upload is successful
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK
+        )  # Ensure upload is successful
         print(f"Time taken to upload {photo_count} images: {upload_time:.6f} seconds")
         print(response.json())
         print(f"Number of Photos: {photo_count}")
-

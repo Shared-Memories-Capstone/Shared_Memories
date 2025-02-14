@@ -24,28 +24,28 @@ class EventViewSet(viewsets.ModelViewSet):
     def by_access_code(self, request, *args, **kwargs):
         """Return a response with an event or 404 using the access code."""
         try:
-            event = Event.objects.get(access_code=kwargs['access_code'])
+            event = Event.objects.get(access_code=kwargs["access_code"])
             serializer = self.serializer_class(event)
             return Response({"status": "success", "event": serializer.data})
         except Event.DoesNotExist:
             return Response(
                 {"status": "error", "message": "Invalid access code"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
             return Response(
                 {"status": "error", "message": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
     queryset = Photo.objects.filter(is_deleted=False)  # filter out deleted photos
     serializer_class = PhotoSerializer
-    
+
     def get_queryset(self):
         queryset = Photo.objects.all()
-        event_id = self.request.query_params.get('event')
+        event_id = self.request.query_params.get("event")
         if event_id:
             queryset = queryset.filter(event__event_id=event_id)
         return queryset

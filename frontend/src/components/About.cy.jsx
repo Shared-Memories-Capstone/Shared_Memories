@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'cypress/react';
-import About from './About'; 
+import About from './About';
 
 describe('About Component', () => {
   beforeEach(() => {

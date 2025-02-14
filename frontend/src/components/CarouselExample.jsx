@@ -29,7 +29,7 @@ export default function CarouselExample() {
           {photos.map((photo, index) => (
             <MDBCol lg={4} md={6} sm={12} key={index} className="mb-4">
               <img
-                src={photo.url} 
+                src={photo.url}
                 className="w-100 shadow-1-strong rounded"
                 alt={photo.alt || `Image ${index + 1}`}
               />
@@ -40,4 +40,3 @@ export default function CarouselExample() {
     </MDBContainer>
   );
 }
-
