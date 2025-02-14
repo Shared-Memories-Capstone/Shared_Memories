@@ -12,7 +12,7 @@ import NewUser from './components/NewUser.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import CreateEventForm from './components/CreateEventForm';
 import EventPage from './components/EventPage.jsx';
-
+import EventManager from './components/EventManager.jsx';
 
 function App() {
 
@@ -26,7 +26,9 @@ function App() {
         <Route path='/newuser' element={<NewUser />} />
 
         <Route path="/" element={
-            <AccessCodeCard />
+          <ProtectedRoute fallback={<AccessCodeCard />}>
+            <EventManager />
+          </ProtectedRoute>
         }/>
         <Route path='/about' element={
             <About />
@@ -48,7 +50,28 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/event-page" element={<EventPage />} />
+        <Route
+          path="/event-manager"
+          element={
+            <ProtectedRoute>
+              <EventManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-event/:eventId"
+          element={
+            <ProtectedRoute>
+              <CreateEventForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/event-page" 
+          element={
+              <EventPage />
+          }
+        />
 
       </Routes>
     </Router>
