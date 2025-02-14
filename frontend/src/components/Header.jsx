@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { logout } from '../services/auth';
 
+
 // Basic Navbar, lead to different part of site
 function Header() {
   const navigate = useNavigate();
