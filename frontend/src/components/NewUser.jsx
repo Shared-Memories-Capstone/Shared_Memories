@@ -27,7 +27,6 @@ function NewUser() {
       await register(formData);
       navigate('/');
     } catch (err) {
-      console.error('Registration error:', err);
       setError('Registration failed. Please try again.');
     }
   };

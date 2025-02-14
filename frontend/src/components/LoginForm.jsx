@@ -15,7 +15,6 @@ function LoginForm() {
       await login(username, password);
       navigate('/'); // Redirect to home page after successful login
     } catch (err) {
-      console.error('Login error:', err);
       setError('Invalid username or password');
     }
   };
