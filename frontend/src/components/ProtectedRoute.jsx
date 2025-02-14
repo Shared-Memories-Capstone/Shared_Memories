@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { verifyToken } from '../services/auth';
 import PropTypes from 'prop-types';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, fallback }) => {
     const [isVerified, setIsVerified] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -21,14 +21,15 @@ const ProtectedRoute = ({ children }) => {
     }
 
     if (!isVerified) {
-        return <Navigate to="/login" replace />;
+        return fallback || <Navigate to="/login" />;
     }
 
     return children;
 };
 
 ProtectedRoute.propTypes = {
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    fallback: PropTypes.node
 };
 
 export default ProtectedRoute;
