@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.files.storage import default_storage
 
 
@@ -37,6 +37,23 @@ class EventViewSet(viewsets.ModelViewSet):
                 {"status": "error", "message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+    
+    @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
+    def user_events(self, request):
+        """
+        Get all events for the currently logged in user
+        """
+        try:
+            events = Event.objects.filter(user_id=request.user).order_by('-event_date')
+            serializer = self.serializer_class(events, many=True)
+            return Response({
+                'events': serializer.data
+            })
+        except Exception as e:
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
