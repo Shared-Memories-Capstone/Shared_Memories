@@ -25,6 +25,7 @@ pre_commit==4.1.0
 pycodestyle==2.12.1
 pyflakes==3.2.0
 Pygments==2.19.1
+python-decouple==3.8
 pytz==2025.1
 PyYAML==6.0.2
 referencing==0.36.2
