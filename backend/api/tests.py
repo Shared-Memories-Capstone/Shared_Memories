@@ -513,7 +513,7 @@ class ImageBulkUploadTest(APITestCase):
                 self.upload_url,
                 {
                     "image": image,
-                    "event": 1,  # need to create an event to go along with this, look at Mike's
+                    "event": 1,
                     "uploaded_by": "Wes",
                     "original_file_name": f"test_{i}.jpg",
                 },
