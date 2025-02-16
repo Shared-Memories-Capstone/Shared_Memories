@@ -54,9 +54,9 @@ describe('CreateEventForm Component', () => {
     });
   });
 
-  it("shows success message on successful event creation", () => { 
+  it("shows success message on successful event creation", () => {
     // This one is failing in the cypress potal although the even was created
-    // I think it's because the "please fillout" message is blocking cypress from seeing it?  
+    // I think it's because the "please fillout" message is blocking cypress from seeing it?
     // Fill out all fields with valid data
     cy.get("input[name='event_title']").type("Test Event");
     cy.get("textarea[name='event_description']").type("This is a test event description.");

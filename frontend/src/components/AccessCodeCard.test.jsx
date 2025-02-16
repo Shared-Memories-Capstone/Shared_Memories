@@ -28,7 +28,7 @@ describe('AccessCodeCard', () => {
     });
 
     render(<BrowserRouter><AccessCodeCard /></BrowserRouter>);
-    
+
     const input = screen.getByPlaceholderText('ABCDEF');
     fireEvent.change(input, { target: { value: 'ABC123' } });
     fireEvent.click(screen.getByText('Enter'));
@@ -42,7 +42,7 @@ describe('AccessCodeCard', () => {
     axios.get.mockRejectedValueOnce(new Error('Invalid code'));
 
     render(<BrowserRouter><AccessCodeCard /></BrowserRouter>);
-    
+
     const input = screen.getByPlaceholderText('ABCDEF');
     fireEvent.change(input, { target: { value: 'INVALID' } });
     fireEvent.click(screen.getByText('Enter'));

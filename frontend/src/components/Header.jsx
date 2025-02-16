@@ -26,7 +26,11 @@ function Header() {
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to='/about' end>About</Nav.Link>
             {/*this is a test to see if the event page work */}
-            <Nav.Link as={NavLink} to='/event-page' end>Gallery</Nav.Link>
+            {user ?
+              <Nav.Link as={NavLink} to='/event-manager' end>Event Manager</Nav.Link>
+            :
+              <Nav.Link as={NavLink} to='/event-page' end>Gallery</Nav.Link>
+            }
             <Nav.Link as={NavLink} to='/api-doc' end>API</Nav.Link>
             <Nav.Link as={NavLink} to='/upload' end>
               Upload

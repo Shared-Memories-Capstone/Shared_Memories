@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { mount } from 'cypress/react';
-import Header from './Header'; 
+import Header from './Header';
 
 describe('Header Component', () => {
   beforeEach(() => {
