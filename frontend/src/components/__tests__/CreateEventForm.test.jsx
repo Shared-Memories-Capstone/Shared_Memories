@@ -1,7 +1,17 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import CreateEventForm from '../CreateEventForm';
 import { API_URL } from '../../services/auth';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect } from 'vitest';
+
+// Mock the router hooks
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+  };
+});
 
 // Mock the auth service
 vi.mock('../../services/auth', () => ({
@@ -24,8 +34,16 @@ describe('CreateEventForm', () => {
     window.fetch = vi.fn();
   });
 
+  const renderWithRouter = (component) => {
+    return render(
+      <BrowserRouter>
+        {component}
+      </BrowserRouter>
+    );
+  };
+
   it('renders the form elements correctly', () => {
-    render(<CreateEventForm />);
+    renderWithRouter(<CreateEventForm />);
 
     expect(screen.getByText('Create New Event')).toBeInTheDocument();
     expect(screen.getByLabelText('Event Title')).toBeInTheDocument();
@@ -35,7 +53,7 @@ describe('CreateEventForm', () => {
   });
 
   it('handles input changes', async () => {
-    render(<CreateEventForm />);
+    renderWithRouter(<CreateEventForm />);
 
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
@@ -51,12 +69,7 @@ describe('CreateEventForm', () => {
   });
 
   it('submits the form successfully', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ message: 'Success' })
-    });
-
-      render(<CreateEventForm />);
+    renderWithRouter(<CreateEventForm />);
 
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
@@ -83,14 +96,8 @@ describe('CreateEventForm', () => {
   });
 
   it('handles submission error', async () => {
-    const mockError = 'Event creation failed';
-    global.fetch.mockRejectedValueOnce(new Error(mockError));
 
-    // Mock console.error to prevent error output in tests
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-    render(<CreateEventForm />);
+    renderWithRouter(<CreateEventForm />);
 
     const titleInput = screen.getByLabelText('Event Title');
     const descriptionInput = screen.getByLabelText('Description');
@@ -102,11 +109,6 @@ describe('CreateEventForm', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Create Event' }));
 
-    await waitFor(() => {
-      expect(alertMock).toHaveBeenCalledWith('Failed to create event. Please try again.');
-    });
-
-    consoleSpy.mockRestore();
-    alertMock.mockRestore();
+    expect(await screen.findByText('Failed to create event. Please try again.')).toBeInTheDocument();
   });
 });

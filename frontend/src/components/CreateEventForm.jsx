@@ -49,7 +49,6 @@ const CreateEventForm = () => {
                 });
             }
         } catch (err) {
-            console.error('Error fetching event:', err);
             setAlert({
                 show: true,
                 message: 'Failed to fetch event details',
@@ -98,7 +97,6 @@ const CreateEventForm = () => {
                 });
             }
         } catch (err) {
-            console.error('Event operation error:', err);
             setAlert({
                 show: true,
                 message: `Failed to ${eventId ? 'update' : 'create'} event. Please try again.`,
