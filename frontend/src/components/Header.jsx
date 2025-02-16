@@ -28,9 +28,6 @@ function Header() {
             {/*this is a test to see if the event page work */}
             <Nav.Link as={NavLink} to='/event-page' end>Gallery</Nav.Link>
             <Nav.Link as={NavLink} to='/api-doc' end>API</Nav.Link>
-            <Nav.Link as={NavLink} to='/upload' end>
-              Upload
-            </Nav.Link>
             <Nav.Link as={NavLink} to="/create-event">
               Create Event
             </Nav.Link>

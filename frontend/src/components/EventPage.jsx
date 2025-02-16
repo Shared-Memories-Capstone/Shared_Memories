@@ -6,7 +6,7 @@ import {
   MDBCol,
   MDBRow,
 } from 'mdb-react-ui-kit';
-
+import UploadPhotoForm from './UploadPhotoForm.jsx';
 export default function EventPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams(); //  Get query params from URL
@@ -15,8 +15,23 @@ export default function EventPage() {
   const [photos, setPhotos] = useState([]); //  Store fetched photos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   useEffect(() => {
+    fetchEventAndPhotos();
+  }, [eventId]);
+
+  // Add new useEffect for success message timeout
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 3000); // Message will disappear after 3 seconds
+      
+      return () => clearTimeout(timer); // Cleanup timeout
+    }
+  }, [success]);
+  
     const fetchEventAndPhotos = async () => {
       try {
         if (!eventId) {
@@ -37,8 +52,10 @@ export default function EventPage() {
       }
     };
 
+  const handleUploadSuccess = () => {
     fetchEventAndPhotos();
-  }, [eventId]);
+    setSuccess("Photo uploaded successfully!");
+  };
 
   if (loading) return <div className="text-center mt-5">Loading event...</div>;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
@@ -46,20 +63,25 @@ export default function EventPage() {
 
   return (
     <MDBContainer className="py-5">
-      <div className="text-center mb-5">
-        <h1 className="display-4 mb-3">Welcome to {event.event_title}</h1>
-        <h2 className="text-muted mb-4">
+      <MDBRow className="mb-3">
+        <MDBCol className="text-start">
+          <h1 className="display-4 mb-3">Welcome to {event.event_title}</h1>
+          <h2 className="text-muted mb-4">
           {new Date(event.event_date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           })}
         </h2>
-        <p className="lead text-muted px-4" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
           {event.event_description}
         </p>
-      </div>
-
+      </MDBCol>
+        <MDBCol>
+          {success && <div className="text-center text-success">{success}</div>}
+          <UploadPhotoForm eventId={eventId} onUploadSuccess={handleUploadSuccess} />
+        </MDBCol>
+      </MDBRow>
       {photos.length === 0 ? (
         <div className="text-center mt-4">No photos have been shared yet.</div>
       ) : (
