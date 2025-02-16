@@ -27,11 +27,11 @@ export default function EventPage() {
       const timer = setTimeout(() => {
         setSuccess(null);
       }, 3000); // Message will disappear after 3 seconds
-      
+
       return () => clearTimeout(timer); // Cleanup timeout
     }
   }, [success]);
-  
+
     const fetchEventAndPhotos = async () => {
       try {
         if (!eventId) {
