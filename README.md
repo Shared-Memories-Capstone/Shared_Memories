@@ -7,6 +7,7 @@
 - [Usage](#usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Deploying](#deploying)
 - [Git Aid](#git-aid)
 - [Pre-Commit Hook Troubleshooting](#pre-commit-hook-troubleshooting)
 - [Acknowledgements](#acknowledgements)
@@ -143,6 +144,40 @@
     git switch {branch_name}
     ```
 
+## Deploying
+
+### Install Docker Desktop
+
+Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.docker.com/get-started/introduction/get-docker-desktop/) to install Docker on your device.
+
+### Individually building and running the frontend and backend for development
+
+You will use `docker-compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
+
+1. Build the backend container (from backend dir):
+
+    ```bash
+    docker build -t sm-backend:0.1.0 .
+    ```
+
+1. Run the backend container image (from backend dir):
+
+    ```bash
+    docker run --name=sm-backend -p 8000:8000 -d --env-file ../.env sm-backend:0.1.0
+    ```
+
+1. Build the frontend container (from frontend dir):
+
+    ```bash
+    docker build -t sm-frontend:0.1.0 .
+    ```
+
+1. Run the frontend container image (from frontend dir):
+
+    ```bash
+    docker run --name=sm-frontend -p 5173:5173 -d sm-frontend:0.1.0
+    ```
+
 ## GIT AID
 
 1. `git branch` - see what branch you are currently on
@@ -227,6 +262,25 @@ If a hook is failing, check logs with:
 pre-commit run --verbose
 ```
 
+## Docker Troubleshooting
+
+1. Error when running the backend container image:
+
+    > docker: Error response from daemon: Conflict. The container name "/sm-backend" is already in use by container "container-id". You have to remove (or rename) that container to be able to reuse that name.
+
+    Run the following command to remove the container. NOTE: Any changes to the container image will be lost.
+
+    ```bash
+    docker stop sm-backend
+    docker rm sm-backend
+    ```
+
+    Now that you've removed the container, execute the command to run the container again (from the backend dir):
+
+    ```bash
+    docker run --name=sm-backend -p 8000:8000 -d --env-file ../.env sm-backend:0.1.0
+    ```
+
 ## Acknowledgements
 
-Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
+Created by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
