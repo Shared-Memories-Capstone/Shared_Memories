@@ -20,6 +20,20 @@
     cd Shared_Memories
     ```
 
+1. Configure the environment variables (from project root):
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Edit `.env` to include your Django secret key.
+
+    If you need to generate a new secret key, run the following command and copy its output:
+
+    ```bash
+    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    ```
+
 1. Create and activate a virtual environment (from backend dir):
 
     ```bash
