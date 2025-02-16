@@ -33,6 +33,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
+    "http://localhost",
 ]
 
 # For development only - more specific settings are better for production
