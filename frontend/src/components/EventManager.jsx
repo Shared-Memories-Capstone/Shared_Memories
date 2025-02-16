@@ -56,14 +56,14 @@ const EventManager = () => {
                   </small>
                 </Card.Text>
                 <div className="d-flex justify-content-between">
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={() => handleViewDetails(event.event_id)}
                   >
                     View Details
                   </Button>
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     onClick={() => handleEditEvent(event.event_id)}
                   >
                     Edit Event
@@ -78,4 +78,4 @@ const EventManager = () => {
   );
 };
 
-export default EventManager; 
+export default EventManager;

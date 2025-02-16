@@ -70,8 +70,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route 
-          path="/event-page" 
+        <Route
+          path="/event-page"
           element={
               <EventPage />
           }
