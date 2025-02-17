@@ -3,5 +3,6 @@ WORKDIR /usr/local/src/app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+RUN chmod +x ./entrypoint.sh
 EXPOSE 8000
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
+ENTRYPOINT ["./entrypoint.sh"]
