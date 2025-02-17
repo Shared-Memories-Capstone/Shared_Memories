@@ -3,6 +3,7 @@ services:
         build:
             context: ./backend
             dockerfile: Dockerfile
+        image: mhooker/shared_memories-backend:${VERSION}
         volumes:
         -   .env:/usr/local/src/.env:ro
         -   static_volume:/usr/local/src/app/static
@@ -16,6 +17,7 @@ services:
             dockerfile: Dockerfile
             args:
                 VITE_API_URL: ${VITE_API_URL}
+        image: mhooker/shared_memories-frontend:${VERSION}
         env_file:
         -   .env
         ports:
