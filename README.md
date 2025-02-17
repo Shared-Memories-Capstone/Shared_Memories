@@ -8,6 +8,7 @@
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [Deploying](#deploying)
+- [Publishing Docker Images](#publishing-docker-images)
 - [Git Aid](#git-aid)
 - [Pre-Commit Hook Troubleshooting](#pre-commit-hook-troubleshooting)
 - [Acknowledgements](#acknowledgements)
@@ -237,7 +238,52 @@ You will use `docker-compose` to deploy the services, but you may want to build 
     ```bash
     docker exec -it sm-backend python manage.py migrate
     ```
+## Publishing Docker Images
 
+1. Build and tag your images (from project root):
+
+    Create a versioned image and tag it with the version number and "latest" for convenience.
+
+    ```bash
+    # Define a version number to use in your images.
+    VERSION=0.4.0
+
+    # Build and tag the backend image.
+    docker build \
+    -t mhooker/shared_memories-backend:$VERSION \
+    -t mhooker/shared_memories-backend:latest \
+    ./backend
+
+    # Build and tag the frontend image.
+    docker build \
+    -t mhooker/shared_memories-frontend:$VERSION \
+    -t mhooker/shared_memories-frontend:latest \
+    ./frontend
+    ```
+
+2. Log in to Docker Hub
+
+    Before pushing, make sure you're logged into Docker Hub:
+
+    ```bash
+    docker login
+    ```
+
+    You'll be prompted for your Docker Hub username and password.
+
+3. Push images to Docker Hub
+
+    Push both the versioned and latest tags:
+
+    ```bash
+    # Push backend images
+    docker push mhooker/shared_memories-backend:$VERSION
+    docker push mhooker/shared_memories-backend:latest
+
+    # Push frontend images
+    docker push mhooker/shared_memories-frontend:$VERSION
+    docker push mhooker/shared_memories-frontend:latest
+    ```
 ## GIT AID
 
 1. `git branch` - see what branch you are currently on
