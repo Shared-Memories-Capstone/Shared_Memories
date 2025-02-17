@@ -158,6 +158,12 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
     docker-compose up --build -d
     ```
 
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it sm-backend python manage.py migrate
+    ```
+
 1. Tear down multi-container setup (from project root):
 
     ```bash
