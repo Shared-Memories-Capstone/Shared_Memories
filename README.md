@@ -242,23 +242,24 @@ You will use `docker-compose` to deploy the services, but you may want to build 
 
 1. Build and tag your images (from project root):
 
-    Create a versioned image and tag it with the version number and "latest" for convenience.
+    Create a versioned image and tag it with the version number (using Git tags or commits) and "latest" for convenience.
 
     ```bash
     # Define a version number to use in your images.
-    VERSION=0.4.0
+    export VERSION=$(git describe --tags --always)
 
-    # Build and tag the backend image.
-    docker build \
+    # Build all images using Docker Compose
+    docker compose build
+
+    # Tag the backend image.
+    docker tag \
     -t mhooker/shared_memories-backend:$VERSION \
     -t mhooker/shared_memories-backend:latest \
-    ./backend
 
-    # Build and tag the frontend image.
+    # Tag the frontend image.
     docker build \
     -t mhooker/shared_memories-frontend:$VERSION \
-    -t mhooker/shared_memories-frontend:latest \
-    ./frontend
+    -t mhooker/shared_memories-frontend:latest
     ```
 
 2. Log in to Docker Hub
