@@ -39,7 +39,7 @@ function App() {
        {/* Protected routes */}
         <Route path='/api-doc' element={
           <ProtectedRoute>
-            <SwaggerUI url="http://localhost:8000/api/schema/" />
+            <SwaggerUI url="/api/schema/" />
           </ProtectedRoute>
         } />
         <Route
