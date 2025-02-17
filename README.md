@@ -150,6 +150,20 @@
 
 Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.docker.com/get-started/introduction/get-docker-desktop/) to install Docker on your device.
 
+### Running Docker Compose
+
+1. Build and run with docker compose (from project root):
+
+    ```bash
+    docker-compose up --build -d
+    ```
+
+1. Tear down multi-container setup (from project root):
+
+    ```bash
+    docker-compose down
+    ```
+
 ### Individually building and running the frontend and backend for development
 
 You will use `docker-compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
