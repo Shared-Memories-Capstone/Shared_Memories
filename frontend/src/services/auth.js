@@ -1,4 +1,5 @@
-export const API_URL = 'http://localhost:8000/api';
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export const verifyToken = async () => {
     const token = localStorage.getItem('token');
