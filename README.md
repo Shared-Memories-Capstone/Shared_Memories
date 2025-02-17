@@ -160,10 +160,10 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
 
 ### Running Docker Compose
 
-1. Build and run with docker compose (from project root):
+1. Build and start services using docker compose (from project root):
 
     ```bash
-    docker-compose up --build -d
+    docker compose up --build -d
     ```
 
 1. Run migrations on postgres container image (from project root):
@@ -175,7 +175,7 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
 1. Tear down multi-container setup (from project root):
 
     ```bash
-    docker-compose down
+    docker compose down
     ```
 
 ### Individually building and running the frontend and backend for development
