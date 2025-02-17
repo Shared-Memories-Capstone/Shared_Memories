@@ -154,28 +154,61 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
 
 You will use `docker-compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
 
+1. Create the network so the containers can communicate (from project root):
+
+    ```bash
+    docker network create shared_memories_net
+    ```
+
 1. Build the backend container (from backend dir):
 
     ```bash
-    docker build -t sm-backend:0.1.0 .
+    docker build -t sm-backend:0.3.2 .
     ```
 
 1. Run the backend container image (from backend dir):
 
     ```bash
-    docker run --name=sm-backend -p 8000:8000 -d --env-file ../.env sm-backend:0.1.0
+    docker run --name sm-backend \
+    --hostname backend \
+    --network shared_memories_net \
+    --env-file ../.env \
+    -d sm-backend:0.3.2
     ```
 
 1. Build the frontend container (from frontend dir):
 
     ```bash
-    docker build -t sm-frontend:0.1.0 .
+    docker build \
+    --build-arg VITE_API_URL=http://localhost/api \
+    -t sm-frontend:0.3.2 .
     ```
 
 1. Run the frontend container image (from frontend dir):
 
     ```bash
-    docker run --name=sm-frontend -p 5173:5173 -d sm-frontend:0.1.0
+    docker run --name sm-frontend \
+    --hostname frontend \
+    --network shared_memories_net \
+    -p 80:80 \
+    -d sm-frontend:0.3.2
+    ```
+
+1. Run the official postgres container image (from project root):
+
+    ```bash
+    docker run --name sm-db \
+    --hostname db \
+    --network shared_memories_net \
+    --env-file .env \
+    -v postgres_data:/var/lib/postgresql/data \
+    -d postgres:17
+    ```
+
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it sm-backend python manage.py migrate
     ```
 
 ## GIT AID
