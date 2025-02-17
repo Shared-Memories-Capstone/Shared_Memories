@@ -13,6 +13,8 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import CreateEventForm from './components/CreateEventForm';
 import EventPage from './components/EventPage.jsx';
 import EventManager from './components/EventManager.jsx';
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 function App() {
 
@@ -39,7 +41,7 @@ function App() {
        {/* Protected routes */}
         <Route path='/api-doc' element={
           <ProtectedRoute>
-            <SwaggerUI url="/api/schema/" />
+            <SwaggerUI url={`${API_URL}/schema/`} />
           </ProtectedRoute>
         } />
         <Route
