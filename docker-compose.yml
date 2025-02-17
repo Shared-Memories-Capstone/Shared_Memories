@@ -4,6 +4,8 @@ services:
             context: ./backend
             dockerfile: Dockerfile
         image: mhooker/shared_memories-backend:${VERSION}
+        env_file:
+        -   .env
         volumes:
         -   .env:/usr/local/src/.env:ro
         -   static_volume:/usr/local/src/app/static
