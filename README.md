@@ -24,15 +24,22 @@
 1. Configure the environment variables (from project root):
 
     ```bash
-    cp .env.example .env
+    cp .env.dev.example .env # For deployment.
+    cp .env.prod.example .env  # For production.
     ```
 
-    Edit `.env` to include your Django secret key.
+    Edit `.env` to include your Django secret key and other unique values.
 
     If you need to generate a new secret key, run the following command and copy its output:
 
     ```bash
     python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    ```
+
+    If you want to dynamically set the .env file for the backend, you can set a shell environment variable:
+
+    ```bash
+    export ENV_FILE=$(pwd)/.env.dev
     ```
 
 1. Create and activate a virtual environment (from backend dir):
