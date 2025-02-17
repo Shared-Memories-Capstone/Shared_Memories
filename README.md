@@ -21,27 +21,6 @@
     cd Shared_Memories
     ```
 
-1. Configure the environment variables (from project root):
-
-    ```bash
-    cp .env.dev.example .env # For deployment.
-    cp .env.prod.example .env  # For production.
-    ```
-
-    Edit `.env` to include your Django secret key and other unique values.
-
-    If you need to generate a new secret key, run the following command and copy its output:
-
-    ```bash
-    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-    ```
-
-    If you want to dynamically set the .env file for the backend, you can set a shell environment variable:
-
-    ```bash
-    export ENV_FILE=$(pwd)/.env.dev
-    ```
-
 1. Create and activate a virtual environment (from backend dir):
 
     ```bash
@@ -53,6 +32,27 @@
 
     ```bash
     pip install -r requirements.txt
+    ```
+
+1. Configure the environment variables (from project root):
+
+    ```bash
+    cp .env.dev.example .env # For deployment.
+    cp .env.prod.example .env  # OPTIONAL: For production. Will overwite deployment .env.
+    ```
+
+    Edit `.env` to include your Django secret key and other unique values.
+
+    OPTIONAL: If you need to generate a new secret key, run the following command and copy its output:
+
+    ```bash
+    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    ```
+
+    OPTIONAL: If you want to dynamically set the .env file for the backend, you can set a shell environment variable:
+
+    ```bash
+    export ENV_FILE=$(pwd)/.env.dev
     ```
 
 1. Install Node.js dependencies (from frontend dir):
@@ -168,7 +168,7 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
 1. Run migrations on postgres container image (from project root):
 
     ```bash
-    docker exec -it sm-backend python manage.py migrate
+    docker exec -it shared_memories-backend-1 python manage.py migrate
     ```
 
 1. Tear down multi-container setup (from project root):
