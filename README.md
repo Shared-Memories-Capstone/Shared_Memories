@@ -154,6 +154,10 @@
 
 ## Deploying
 
+### Install the Development Environment
+
+Follow the instructions in the [Installation](#installation) section to establish your development environment. You will need the cloned repo to build your container images. Make sure you configure your `.env` for either development (e.g., `.env.dev.example`) or production (e.g., `.env.prod.example`).
+
 ### Install Docker Desktop
 
 Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.docker.com/get-started/introduction/get-docker-desktop/) to install Docker on your device.
@@ -180,7 +184,7 @@ Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.
 
 ### Individually building and running the frontend and backend for development
 
-You will use `docker-compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
+You will use `docker compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
 
 1. Create the network so the containers can communicate (from project root):
 
@@ -240,29 +244,9 @@ You will use `docker-compose` to deploy the services, but you may want to build 
     ```
 ## Publishing Docker Images
 
-1. Build and tag your images (from project root):
+To build the Docker container images that the server will pull, you need to create builds for the `linux/amd64` platform.
 
-    Create a versioned image and tag it with the version number (using Git tags or commits) and "latest" for convenience.
-
-    ```bash
-    # Define a version number to use in your images.
-    export VERSION=$(git describe --tags --always)
-
-    # Build all images using Docker Compose
-    docker compose build
-
-    # Tag the backend image.
-    docker tag \
-    -t mhooker/shared_memories-backend:$VERSION \
-    -t mhooker/shared_memories-backend:latest \
-
-    # Tag the frontend image.
-    docker build \
-    -t mhooker/shared_memories-frontend:$VERSION \
-    -t mhooker/shared_memories-frontend:latest
-    ```
-
-2. Log in to Docker Hub
+1. Log in to Docker Hub
 
     Before pushing, make sure you're logged into Docker Hub:
 
@@ -272,19 +256,35 @@ You will use `docker-compose` to deploy the services, but you may want to build 
 
     You'll be prompted for your Docker Hub username and password.
 
-3. Push images to Docker Hub
-
-    Push both the versioned and latest tags:
+1. Build, tag, and push your backend image (from project root):
 
     ```bash
-    # Push backend images
-    docker push mhooker/shared_memories-backend:$VERSION
-    docker push mhooker/shared_memories-backend:latest
-
-    # Push frontend images
-    docker push mhooker/shared_memories-frontend:$VERSION
-    docker push mhooker/shared_memories-frontend:latest
+    # Build backend images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+    -t mhooker/shared_memories-backend:latest \
+    --push \
+    ./backend
     ```
+
+1. Build, tag, and push your frontend image (from project root):
+
+    Building the frontend requires you to provide a `VITE_API_URL` build arg. If this argument is not included, the site frontend will be built with the development backend URL (`http://localhost:8000/api`). You need to know where you'll deploy this image, but, in general, you should use either `http://localhost/api` (local production deployments) or `http://sharedmemories.org/api` (live production deployments).
+
+    ```bash
+     export VITE_API_URL=http://sharedmemories.org/api  # Live production deployment
+     ```
+
+     The build process will bake the `VITE_API_URL` value into the HTML and JS source code that Nginx will serve.
+
+    ```bash
+    # Build frontend images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+    -t mhooker/shared_memories-frontend:latest \
+    --build-arg VITE_API_URL=$VITE_API_URL \
+    --push \
+    ./frontend
+    ```
+
 ## GIT AID
 
 1. `git branch` - see what branch you are currently on
