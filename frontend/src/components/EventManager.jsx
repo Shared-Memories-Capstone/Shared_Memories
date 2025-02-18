@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Card, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 const EventManager = () => {
   const [events, setEvents] = useState([]);
@@ -14,7 +16,7 @@ const EventManager = () => {
 
   const fetchUserEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/events/user_events/', {
+      const response = await axios.get(`${API_URL}/events/user_events/`, {
         headers: {
           'Authorization': `Token ${localStorage.getItem('token')}`
         }
@@ -56,14 +58,14 @@ const EventManager = () => {
                   </small>
                 </Card.Text>
                 <div className="d-flex justify-content-between">
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={() => handleViewDetails(event.event_id)}
                   >
                     View Details
                   </Button>
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     onClick={() => handleEditEvent(event.event_id)}
                   >
                     Edit Event
@@ -78,4 +80,4 @@ const EventManager = () => {
   );
 };
 
-export default EventManager; 
+export default EventManager;

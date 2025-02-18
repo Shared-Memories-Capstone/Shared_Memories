@@ -1,4 +1,6 @@
 import axios from 'axios';
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export const uploadPhoto = async (file, eventId, uploadedBy = 'Guest') => {
     const formData = new FormData();
@@ -9,7 +11,7 @@ export const uploadPhoto = async (file, eventId, uploadedBy = 'Guest') => {
 
     try {
         const response = await axios.post(
-            'http://localhost:8000/api/upload-photo/',
+            `${API_URL}/upload-photo/`,
             formData,
             {
                 headers: {

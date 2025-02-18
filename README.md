@@ -7,6 +7,8 @@
 - [Usage](#usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Deploying](#deploying)
+- [Publishing Docker Images](#publishing-docker-images)
 - [Git Aid](#git-aid)
 - [Pre-Commit Hook Troubleshooting](#pre-commit-hook-troubleshooting)
 - [Acknowledgements](#acknowledgements)
@@ -31,6 +33,27 @@
 
     ```bash
     pip install -r requirements.txt
+    ```
+
+1. Configure the environment variables (from project root):
+
+    ```bash
+    cp .env.dev.example .env # For deployment.
+    cp .env.prod.example .env  # OPTIONAL: For production. Will overwite deployment .env.
+    ```
+
+    Edit `.env` to include your Django secret key and other unique values.
+
+    OPTIONAL: If you need to generate a new secret key, run the following command and copy its output:
+
+    ```bash
+    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    ```
+
+    OPTIONAL: If you want to dynamically set the .env file for the backend, you can set a shell environment variable:
+
+    ```bash
+    export ENV_FILE=$(pwd)/.env.dev
     ```
 
 1. Install Node.js dependencies (from frontend dir):
@@ -129,6 +152,139 @@
     git switch {branch_name}
     ```
 
+## Deploying
+
+### Install Docker Desktop
+
+Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.docker.com/get-started/introduction/get-docker-desktop/) to install Docker on your device.
+
+### Running Docker Compose
+
+1. Build and start services using docker compose (from project root):
+
+    ```bash
+    docker compose up --build -d
+    ```
+
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it shared_memories-backend-1 python manage.py migrate
+    ```
+
+1. Tear down multi-container setup (from project root):
+
+    ```bash
+    docker compose down
+    ```
+
+### Individually building and running the frontend and backend for development
+
+You will use `docker-compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
+
+1. Create the network so the containers can communicate (from project root):
+
+    ```bash
+    docker network create shared_memories_net
+    ```
+
+1. Build the backend container (from backend dir):
+
+    ```bash
+    docker build -t sm-backend:0.3.2 .
+    ```
+
+1. Run the backend container image (from backend dir):
+
+    ```bash
+    docker run --name sm-backend \
+    --hostname backend \
+    --network shared_memories_net \
+    --env-file ../.env \
+    -d sm-backend:0.3.2
+    ```
+
+1. Build the frontend container (from frontend dir):
+
+    ```bash
+    docker build \
+    --build-arg VITE_API_URL=http://localhost/api \
+    -t sm-frontend:0.3.2 .
+    ```
+
+1. Run the frontend container image (from frontend dir):
+
+    ```bash
+    docker run --name sm-frontend \
+    --hostname frontend \
+    --network shared_memories_net \
+    -p 80:80 \
+    -d sm-frontend:0.3.2
+    ```
+
+1. Run the official postgres container image (from project root):
+
+    ```bash
+    docker run --name sm-db \
+    --hostname db \
+    --network shared_memories_net \
+    --env-file .env \
+    -v postgres_data:/var/lib/postgresql/data \
+    -d postgres:17
+    ```
+
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it sm-backend python manage.py migrate
+    ```
+## Publishing Docker Images
+
+1. Build and tag your images (from project root):
+
+    Create a versioned image and tag it with the version number (using Git tags or commits) and "latest" for convenience.
+
+    ```bash
+    # Define a version number to use in your images.
+    export VERSION=$(git describe --tags --always)
+
+    # Build all images using Docker Compose
+    docker compose build
+
+    # Tag the backend image.
+    docker tag \
+    -t mhooker/shared_memories-backend:$VERSION \
+    -t mhooker/shared_memories-backend:latest \
+
+    # Tag the frontend image.
+    docker build \
+    -t mhooker/shared_memories-frontend:$VERSION \
+    -t mhooker/shared_memories-frontend:latest
+    ```
+
+2. Log in to Docker Hub
+
+    Before pushing, make sure you're logged into Docker Hub:
+
+    ```bash
+    docker login
+    ```
+
+    You'll be prompted for your Docker Hub username and password.
+
+3. Push images to Docker Hub
+
+    Push both the versioned and latest tags:
+
+    ```bash
+    # Push backend images
+    docker push mhooker/shared_memories-backend:$VERSION
+    docker push mhooker/shared_memories-backend:latest
+
+    # Push frontend images
+    docker push mhooker/shared_memories-frontend:$VERSION
+    docker push mhooker/shared_memories-frontend:latest
+    ```
 ## GIT AID
 
 1. `git branch` - see what branch you are currently on
@@ -213,6 +369,25 @@ If a hook is failing, check logs with:
 pre-commit run --verbose
 ```
 
+## Docker Troubleshooting
+
+1. Error when running the backend container image:
+
+    > docker: Error response from daemon: Conflict. The container name "/sm-backend" is already in use by container "container-id". You have to remove (or rename) that container to be able to reuse that name.
+
+    Run the following command to remove the container. NOTE: Any changes to the container image will be lost.
+
+    ```bash
+    docker stop sm-backend
+    docker rm sm-backend
+    ```
+
+    Now that you've removed the container, execute the command to run the container again (from the backend dir):
+
+    ```bash
+    docker run --name=sm-backend -p 8000:8000 -d --env-file ../.env sm-backend:0.1.0
+    ```
+
 ## Acknowledgements
 
-Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
+Created by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.

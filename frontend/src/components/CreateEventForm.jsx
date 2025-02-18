@@ -11,7 +11,7 @@ const CreateEventForm = () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [showEventCreated, setShowEventCreated] = useState(false);
     const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
-    
+
     const [eventData, setEventData] = useState({
         event_title: "",
         event_description: "",
@@ -60,12 +60,12 @@ const CreateEventForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setAlert({ show: false, message: '', variant: 'success' });
-        
+
         try {
-            const url = eventId 
+            const url = eventId
                 ? `${API_URL}/events/${eventId}/`
                 : `${API_URL}/events/`;
-                
+
             const method = eventId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -162,18 +162,18 @@ const CreateEventForm = () => {
                                 {eventId ? 'Update Event' : 'Create Event'}
                             </Button>
                             {eventId && (
-                                <Button 
-                                    variant="secondary" 
+                                <Button
+                                    variant="secondary"
                                     className="ms-2"
                                     onClick={() => navigate('/event-manager')}
                                 >
                                     Cancel
                                 </Button>
                             )}
-                            
+
                             {alert.show && (
-                                <Alert 
-                                    variant={alert.variant} 
+                                <Alert
+                                    variant={alert.variant}
                                     className="mt-3"
                                 >
                                     {alert.message}
