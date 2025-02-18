@@ -25,8 +25,8 @@
 1. Create and activate a virtual environment (from backend dir):
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows, use venv\Scripts\activate
+    python3 -m venv venv  # On Windows, uses `python -m venv venv`.
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`.
     ```
 
 1. Install Python requirements in virtual environment (from backend dir):
@@ -122,7 +122,7 @@
 1. Run all tests (from project root dir):
 
     ```bash
-    make test  # run all of the backend and frontend tests
+    make test  # Linux and MacOS-only: run all of the backend and frontend tests
     ```
 
 ## Contributing
