@@ -15,11 +15,13 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
+const CODE_PLACEHOLDER = 'Enter your 6-digit code';
+
 describe('AccessCodeCard', () => {
   it('renders the access code form', () => {
     render(<BrowserRouter><AccessCodeCard /></BrowserRouter>);
-    expect(screen.getByText('Unlock the Memories')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('ABCDEF')).toBeInTheDocument();
+    expect(screen.getByText(/Unlock the Memories/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(CODE_PLACEHOLDER)).toBeInTheDocument();
   });
 
   it('handles successful code submission', async () => {
@@ -29,9 +31,9 @@ describe('AccessCodeCard', () => {
 
     render(<BrowserRouter><AccessCodeCard /></BrowserRouter>);
 
-    const input = screen.getByPlaceholderText('ABCDEF');
+    const input = screen.getByPlaceholderText(CODE_PLACEHOLDER);
     fireEvent.change(input, { target: { value: 'ABC123' } });
-    fireEvent.click(screen.getByText('Enter'));
+    fireEvent.click(screen.getByText('Join Event'));
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/event-page?event=123');
@@ -39,13 +41,12 @@ describe('AccessCodeCard', () => {
   });
 
   it('displays error message on invalid code', async () => {
-    axios.get.mockRejectedValueOnce(new Error('Invalid code'));
 
     render(<BrowserRouter><AccessCodeCard /></BrowserRouter>);
 
-    const input = screen.getByPlaceholderText('ABCDEF');
-    fireEvent.change(input, { target: { value: 'INVALID' } });
-    fireEvent.click(screen.getByText('Enter'));
+    const input = screen.getByPlaceholderText(CODE_PLACEHOLDER);
+    fireEvent.change(input, { target: { value: '111111' } });
+    fireEvent.click(screen.getByText('Join Event'));
 
     await waitFor(() => {
       expect(screen.getByText('Invalid access code. Please try again.')).toBeInTheDocument();

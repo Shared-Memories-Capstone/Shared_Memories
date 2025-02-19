@@ -6,7 +6,10 @@ import {
   MDBCol,
   MDBRow,
 } from 'mdb-react-ui-kit';
+import { Button } from 'react-bootstrap';
 import UploadPhotoForm from './UploadPhotoForm.jsx';
+import ImageCarousel from './ImageCarousel.jsx';
+
 export default function EventPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams(); //  Get query params from URL
@@ -16,6 +19,7 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showCarousel, setShowCarousel] = useState(false);
 
   useEffect(() => {
     fetchEventAndPhotos();
@@ -65,18 +69,37 @@ export default function EventPage() {
     <MDBContainer className="py-5">
       <MDBRow className="mb-3">
         <MDBCol className="text-start">
-          <h1 className="display-4 mb-3">Welcome to {event.event_title}</h1>
+          <div className="d-flex align-items-center gap-4 mb-3">
+            <h1 className="display-4 mb-0">Welcome to {event.event_title}</h1>
+            <Button 
+              variant="primary" 
+              size="lg" 
+              onClick={() => setShowCarousel(true)}
+              className="d-flex align-items-center gap-2"
+              style={{ 
+                borderRadius: '50%', 
+                width: '60px', 
+                height: '60px', 
+                padding: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <i className="fas fa-play" style={{ fontSize: '1.5rem' }}>▶️</i>
+            </Button>
+          </div>
           <h2 className="text-muted mb-4">
-          {new Date(event.event_date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </h2>
-        <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          {event.event_description}
-        </p>
-      </MDBCol>
+            {new Date(event.event_date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </h2>
+          <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            {event.event_description}
+          </p>
+        </MDBCol>
         <MDBCol>
           {success && <div className="text-center text-success">{success}</div>}
           <UploadPhotoForm eventId={eventId} onUploadSuccess={handleUploadSuccess} />
@@ -97,11 +120,17 @@ export default function EventPage() {
                   objectFit: 'cover',
                   cursor: 'pointer'
                 }}
+                onClick={() => setShowCarousel(true)}
               />
             </MDBCol>
           ))}
         </MDBRow>
       )}
+      <ImageCarousel 
+        show={showCarousel}
+        onHide={() => setShowCarousel(false)}
+        photos={photos}
+      />
     </MDBContainer>
   );
 }

@@ -79,4 +79,41 @@ body {
 .form-control:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+}
+
+/* Add these to your theme.css */
+.image-carousel .carousel-control-prev,
+.image-carousel .carousel-control-next {
+  width: 10%;
+  opacity: 0.8;
+  background: rgba(0,0,0,0.2);
+}
+
+.image-carousel .carousel-control-prev:hover,
+.image-carousel .carousel-control-next:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: var(--background-color);
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.modal-header .btn-close {
+  background-color: var(--primary-color);
+  opacity: 0.8;
+  border-radius: 50%;
+  padding: 0.75rem;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
 } 

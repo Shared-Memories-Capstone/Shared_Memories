@@ -26,7 +26,7 @@ describe('Header', () => {
   it('shows logout and username when user is logged in', () => {
     localStorage.setItem('user', JSON.stringify({ username: 'testuser' }));
     render(<BrowserRouter><Header /></BrowserRouter>);
-    expect(screen.getByText(/welcome, testuser/i)).toBeInTheDocument();
+    expect(screen.getByText(/👋 testuser/i)).toBeInTheDocument();
     expect(screen.getByText(/logout/i)).toBeInTheDocument();
   });
 
