@@ -13,6 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import CreateEventForm from './components/CreateEventForm';
 import EventPage from './components/EventPage.jsx';
 import EventManager from './components/EventManager.jsx';
+import './styles/theme.css'
 
 function App() {
 
@@ -29,7 +30,10 @@ function App() {
           <ProtectedRoute fallback={<AccessCodeCard />}>
             <EventManager />
           </ProtectedRoute>
-        }/>
+        } />
+        <Route path='/find-event' element={
+          <AccessCodeCard />
+        } />
         <Route path='/about' element={
             <About />
         } />

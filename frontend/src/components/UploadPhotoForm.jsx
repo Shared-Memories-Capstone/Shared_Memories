@@ -50,6 +50,7 @@ const UploadPhotoForm = ({ eventId, onUploadSuccess }) => {
 
   return (
     <div className="upload-photo-container" data-testid="upload-form">
+      <h3 className="text-center mb-4" style={{ color: 'var(--primary-color)' }}>Share Your Photos ✨</h3>
       <div
         className={`upload-area ${isDragging ? 'dragging' : ''} ${isUploading ? 'uploading' : ''}`}
         onDragOver={handleDragOver}
@@ -59,14 +60,19 @@ const UploadPhotoForm = ({ eventId, onUploadSuccess }) => {
         {preview ? (
           <div className="preview-container">
             <img src={preview} alt="Preview" className="image-preview" />
-            {isUploading && <div className="upload-overlay">Uploading...</div>}
+            {isUploading && (
+              <div className="upload-overlay">
+                <div className="upload-progress">Uploading...</div>
+              </div>
+            )}
           </div>
         ) : (
           <>
             <div className="upload-icon">📸</div>
-            <p>Drag and drop your photo here or</p>
+            <p className="mb-3">Drag and drop your photo here</p>
+            <p className="text-muted mb-3">or</p>
             <label className="upload-button">
-              Browse Files
+              Choose Photo
               <input
                 type="file"
                 accept="image/*"

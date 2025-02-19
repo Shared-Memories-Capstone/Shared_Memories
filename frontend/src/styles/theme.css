@@ -1,0 +1,82 @@
+:root {
+  --primary-color: #6C63FF;    /* Fun purple */
+  --secondary-color: #4ECDC4;  /* Fresh mint */
+  --accent-color: #FF6B6B;     /* Coral */
+  --background-color: #F7F9FC; /* Light cool gray */
+  --text-color: #2D3748;       /* Dark slate */
+  --card-shadow: 0 4px 20px rgba(108, 99, 255, 0.1);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Poppins', sans-serif;
+}
+
+.navbar {
+  background-color: white !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+  color: var(--primary-color) !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-color) !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+    border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.form-control {
+  border-radius: 10px;
+  border: 2px solid #E2E8F0;
+  padding: 0.75rem;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+} 
