@@ -70,24 +70,27 @@ export default function EventPage() {
       <MDBRow className="mb-3">
         <MDBCol className="text-start">
           <div className="d-flex align-items-center gap-4 mb-3">
-            <h1 className="display-4 mb-0">Welcome to {event.event_title}</h1>
+          {photos.length > 0 && (
             <Button 
               variant="primary" 
               size="lg" 
               onClick={() => setShowCarousel(true)}
-              className="d-flex align-items-center gap-2"
+              className="d-flex align-items-center justify-content-center"
               style={{ 
                 borderRadius: '50%', 
                 width: '60px', 
                 height: '60px', 
                 padding: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
+                flexShrink: 0,
+                backgroundColor: 'var(--primary-color)',
+                border: 'none',
+                boxShadow: 'var(--card-shadow)'
               }}
             >
               <i className="fas fa-play" style={{ fontSize: '1.5rem' }}>▶️</i>
             </Button>
+          )}
+          <h1 className="display-4 mb-0">Welcome to {event.event_title}</h1>
           </div>
           <h2 className="text-muted mb-4">
             {new Date(event.event_date).toLocaleDateString('en-US', {
