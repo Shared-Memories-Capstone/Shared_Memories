@@ -1,7 +1,7 @@
-import { Modal } from 'react-bootstrap';
-import Carousel from 'react-bootstrap/Carousel';
+import { Modal, Carousel } from 'react-bootstrap';
 
 const ImageCarousel = ({ show, onHide, photos }) => {
+
   return (
     <Modal show={show} onHide={onHide} fullscreen={true}>
       <Modal.Header closeButton>
@@ -11,11 +11,14 @@ const ImageCarousel = ({ show, onHide, photos }) => {
       </Modal.Header>
       <Modal.Body className="p-0 bg-dark">
         <Carousel 
-          interval={3000} 
-          className="image-carousel" 
+          fade
+          interval={3000}
+          defaultActiveIndex={0}
           controls={true}
           indicators={true}
-          autoPlay={true}
+          pause={false}
+          wrap={true}
+          className="image-carousel"
         >
           {photos.map((photo, index) => (
             <Carousel.Item key={photo.photo_id || index}>
