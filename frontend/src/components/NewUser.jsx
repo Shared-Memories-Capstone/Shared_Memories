@@ -35,7 +35,7 @@ function NewUser() {
     <Container>
       <Row className="justify-content-center mt-5">
         <Col xs={12} md={6} lg={4}>
-          <h1>Create Account</h1>
+          <h1 className='text-center mb-4' style={{ color: 'var(--primary-color)' }}>Create Account</h1>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form className="mt-5" onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">

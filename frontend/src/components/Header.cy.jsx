@@ -48,7 +48,7 @@ describe('Header Component', () => {
         <Header />
       </Router>
     );
-    cy.get('nav').contains('Welcome, testuser');
+    cy.get('nav').contains('👋 testuser');
     cy.get('nav').contains('Logout');
   });
 

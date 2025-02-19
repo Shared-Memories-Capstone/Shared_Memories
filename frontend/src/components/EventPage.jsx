@@ -6,7 +6,11 @@ import {
   MDBCol,
   MDBRow,
 } from 'mdb-react-ui-kit';
+import { Button } from 'react-bootstrap';
 import UploadPhotoForm from './UploadPhotoForm.jsx';
+import ImageCarousel from './ImageCarousel.jsx';
+import LoadingSpinner from './LoadingSpinner.jsx';
+
 export default function EventPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams(); //  Get query params from URL
@@ -16,6 +20,8 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showCarousel, setShowCarousel] = useState(false);
+  const [imagesLoading, setImagesLoading] = useState(true);
 
   useEffect(() => {
     fetchEventAndPhotos();
@@ -38,6 +44,7 @@ export default function EventPage() {
           navigate('/');
           return;
         }
+        setImagesLoading(true);
         // Fetch event details
         const eventResponse = await axios.get(`http://localhost:8000/api/events/${eventId}/`);
         setEvent(eventResponse.data);
@@ -49,6 +56,7 @@ export default function EventPage() {
         setError("Unable to load event content. Please try again later.");
       } finally {
         setLoading(false);
+        setImagesLoading(false);
       }
     };
 
@@ -57,7 +65,7 @@ export default function EventPage() {
     setSuccess("Photo uploaded successfully!");
   };
 
-  if (loading) return <div className="text-center mt-5">Loading event...</div>;
+  if (loading) return <LoadingSpinner message="Loading event..." />;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
   if (!event) return <div className="text-center mt-5">Event not found</div>;
 
@@ -65,24 +73,48 @@ export default function EventPage() {
     <MDBContainer className="py-5">
       <MDBRow className="mb-3">
         <MDBCol className="text-start">
-          <h1 className="display-4 mb-3">Welcome to {event.event_title}</h1>
+          <div className="d-flex align-items-center gap-4 mb-3">
+          {photos.length > 0 && (
+            <Button 
+              variant="primary" 
+              size="lg" 
+              onClick={() => setShowCarousel(true)}
+              className="d-flex align-items-center justify-content-center"
+              style={{ 
+                borderRadius: '50%', 
+                width: '60px', 
+                height: '60px', 
+                padding: 0,
+                flexShrink: 0,
+                backgroundColor: 'var(--primary-color)',
+                border: 'none',
+                boxShadow: 'var(--card-shadow)'
+              }}
+            >
+              <i className="fas fa-play" style={{ fontSize: '1.5rem' }}>▶️</i>
+            </Button>
+          )}
+          <h1 className="display-4 mb-0">Welcome to {event.event_title}</h1>
+          </div>
           <h2 className="text-muted mb-4">
-          {new Date(event.event_date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </h2>
-        <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          {event.event_description}
-        </p>
-      </MDBCol>
+            {new Date(event.event_date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </h2>
+          <p className="lead text-muted" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            {event.event_description}
+          </p>
+        </MDBCol>
         <MDBCol>
           {success && <div className="text-center text-success">{success}</div>}
           <UploadPhotoForm eventId={eventId} onUploadSuccess={handleUploadSuccess} />
         </MDBCol>
       </MDBRow>
-      {photos.length === 0 ? (
+      {imagesLoading ? (
+        <LoadingSpinner message="Loading photos..." />
+      ) : photos.length === 0 ? (
         <div className="text-center mt-4">No photos have been shared yet.</div>
       ) : (
         <MDBRow className="g-4">
@@ -97,11 +129,17 @@ export default function EventPage() {
                   objectFit: 'cover',
                   cursor: 'pointer'
                 }}
+                onClick={() => setShowCarousel(true)}
               />
             </MDBCol>
           ))}
         </MDBRow>
       )}
+      <ImageCarousel 
+        show={showCarousel}
+        onHide={() => setShowCarousel(false)}
+        photos={photos}
+      />
     </MDBContainer>
   );
 }

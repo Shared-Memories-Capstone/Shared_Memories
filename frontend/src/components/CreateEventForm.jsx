@@ -118,7 +118,7 @@ const CreateEventForm = () => {
             {showEventCreated ? <EventCreatedWithCode event={eventData} /> :
                 <Row className="justify-content-center mt-5">
                     <Col xs={12} md={6} lg={4}>
-                        <h2>{eventId ? `Edit ${eventData.event_title}` : 'Create New Event'}</h2>
+                        <h2 className="text-center mb-4" style={{ color: 'var(--primary-color)' }}>{eventId ? `Edit ${eventData.event_title}` : 'Create New Event'}</h2>
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className="mb-3">
                                 <Form.Label htmlFor="event_title">Event Title</Form.Label>
