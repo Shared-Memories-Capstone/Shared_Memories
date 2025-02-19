@@ -9,6 +9,7 @@ import {
 import { Button } from 'react-bootstrap';
 import UploadPhotoForm from './UploadPhotoForm.jsx';
 import ImageCarousel from './ImageCarousel.jsx';
+import LoadingSpinner from './LoadingSpinner.jsx';
 
 export default function EventPage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function EventPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showCarousel, setShowCarousel] = useState(false);
+  const [imagesLoading, setImagesLoading] = useState(true);
 
   useEffect(() => {
     fetchEventAndPhotos();
@@ -42,6 +44,7 @@ export default function EventPage() {
           navigate('/');
           return;
         }
+        setImagesLoading(true);
         // Fetch event details
         const eventResponse = await axios.get(`http://localhost:8000/api/events/${eventId}/`);
         setEvent(eventResponse.data);
@@ -53,6 +56,7 @@ export default function EventPage() {
         setError("Unable to load event content. Please try again later.");
       } finally {
         setLoading(false);
+        setImagesLoading(false);
       }
     };
 
@@ -61,7 +65,7 @@ export default function EventPage() {
     setSuccess("Photo uploaded successfully!");
   };
 
-  if (loading) return <div className="text-center mt-5">Loading event...</div>;
+  if (loading) return <LoadingSpinner message="Loading event..." />;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
   if (!event) return <div className="text-center mt-5">Event not found</div>;
 
@@ -108,7 +112,9 @@ export default function EventPage() {
           <UploadPhotoForm eventId={eventId} onUploadSuccess={handleUploadSuccess} />
         </MDBCol>
       </MDBRow>
-      {photos.length === 0 ? (
+      {imagesLoading ? (
+        <LoadingSpinner message="Loading photos..." />
+      ) : photos.length === 0 ? (
         <div className="text-center mt-4">No photos have been shared yet.</div>
       ) : (
         <MDBRow className="g-4">
