@@ -70,8 +70,11 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
+# Django stuff
 *.log
+db.sqlite3
+media/
+static/
 
 # Sphinx documentation
 docs/_build/
@@ -98,3 +101,7 @@ venv/
 */*.swp
 */*/*.swp
 */*/*/*.swp
+
+# Sensitive files (but not examples)
+.env*
+!.env.example*
