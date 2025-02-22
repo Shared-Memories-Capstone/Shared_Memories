@@ -336,6 +336,103 @@ To build the Docker container images that the server will pull, you need to crea
         ./frontend
     ```
 
+## Pulling Docker Images
+
+To run the Docker container images on the server, you will need to pull the latest versions. We will pull the latest versions using a Docker compose file. These instructions assume you are connected to the server already via a local terminal or SSH.
+
+1. Create a test network:
+
+    ```bash
+    docker network create shared_memories_test
+    ```
+
+1. Pull the new backend image (from project root):
+
+    ```bash
+    docker pull mhooker/shared_memories-backend:latest
+    ```
+
+1. Run the new backend container on a different port from the currently running container:
+
+    ```bash
+    docker run --name shared_memories-backend-test \
+        --hostname backend \
+        --mount src=static_volume,dst=/usr/local/src/app/static \
+        --mount src=media_volume,dst=/usr/local/src/app/media \
+        --network shared_memories_test \
+        --rm \
+        -p "8081:8000" \
+        -v $(pwd)/.env:/usr/local/src/.env \
+        mhooker/shared_memories-backend:latest
+    ```
+
+1. Verify the new container is running correctly:
+
+    ```bash
+    docker logs shared_memories-backend-test
+    ```
+
+1. Test the new container returns expected results:
+
+    ```bash
+    curl http://localhost:8081/api/
+    ```
+
+    Stop the running backend test container if it succeeds and continue.
+
+1. Switch traffic to new image:
+
+    ```bash
+    docker compose up -d --no-deps backend
+    ```
+
+1. Run migrations on postgres container image from the new backend container:
+
+    ```bash
+    docker exec -it shared_memories-backend-1 python manage.py migrate
+    ```
+
+1. Pull the new frontend image (from project root):
+
+    ```bash
+    docker pull mhooker/shared_memories-frontend:latest
+    ```
+
+1. Run the new frontend container on a different port from the currently running container:
+
+    We are using the existing network created by docker compose so the frontend can talk to a live backend.
+
+    ```bash
+    docker run --name shared_memories-frontend-test \
+        --hostname frontend \
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly \
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly \
+        --network shared_memories_default \
+        --rm \
+        -p "8082:80" \
+        mhooker/shared_memories-frontend:latest
+    ```
+
+1. Verify the new container is running correctly:
+
+    ```bash
+    docker logs shared_memories-frontend-test
+    ```
+
+1. Test the new container returns expected results:
+
+    ```bash
+    curl http://localhost:8082/api/
+    ```
+
+    Stop the running frontend test container if it succeeds and continue.
+
+1. Switch traffic to new image:
+
+    ```bash
+    docker compose up -d --no-deps frontend
+    ```
+
 ## GIT AID
 
 1. `git branch` - see what branch you are currently on
