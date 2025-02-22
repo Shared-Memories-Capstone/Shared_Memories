@@ -205,6 +205,8 @@ You will use `docker compose` to deploy the services, but you may want to build 
     ```bash
     docker run --name sm-backend \
         --hostname backend \
+        --mount src=static_volume,dst=/usr/local/src/app/static \
+        --mount src=media_volume,dst=/usr/local/src/app/media \
         --network shared_memories_net \
         --rm \
         -p "8000:8000" \
@@ -217,6 +219,8 @@ You will use `docker compose` to deploy the services, but you may want to build 
     ```powershell
     docker run --name sm-backend `
         --hostname backend `
+        --mount src=static_volume,dst=/usr/local/src/app/static `
+        --mount src=media_volume,dst=/usr/local/src/app/media `
         --network shared_memories_net `
         --rm `
         -p "8000:8000" `
@@ -249,6 +253,8 @@ You will use `docker compose` to deploy the services, but you may want to build 
     ```bash
     docker run --name sm-frontend \
         --hostname frontend \
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly \
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly \
         --network shared_memories_net \
         --rm \
         -p "80:80" \
@@ -261,6 +267,8 @@ You will use `docker compose` to deploy the services, but you may want to build 
     docker run `
         --name sm-frontend `
         --hostname frontend `
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly `
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly `
         --network shared_memories_net `
         --rm `
         -p "80:80" `
@@ -274,8 +282,9 @@ You will use `docker compose` to deploy the services, but you may want to build 
         --hostname db \
         --network shared_memories_net \
         --env-file .env \
+        --rm \
         -v postgres_data:/var/lib/postgresql/data \
-        -d postgres:17
+        -d postgres:17.3-alpine
     ```
 
 1. Run migrations on postgres container image (from project root):
@@ -283,6 +292,7 @@ You will use `docker compose` to deploy the services, but you may want to build 
     ```bash
     docker exec -it sm-backend python manage.py migrate
     ```
+
 ## Publishing Docker Images
 
 To build the Docker container images that the server will pull, you need to create builds for the `linux/amd64` platform.
