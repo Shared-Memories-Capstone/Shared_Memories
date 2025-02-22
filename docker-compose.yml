@@ -1,49 +1,75 @@
+# Define the name of the Docker Compose project
 name: shared_memories
 
 services:
+    # Backend service (Django)
     backend:
         build:
+            # Define the build context (Dockerfile is located inside the 'backend' directory)
             context: ./backend
             dockerfile: Dockerfile
+        # Use a specific image name for the backend
         image: mhooker/shared_memories-backend:latest
+        # Load environment variables from the .env file
         env_file:
         -   .env
         volumes:
+        # Mount the .env file as read-only inside the container for environment variables
         -   .env:/usr/local/src/.env:ro
+        # Mount a volume to store static files (e.g., CSS, JS)
         -   static_volume:/usr/local/src/app/static
+        # Mount a volume to store uploaded media files (e.g., images)
         -   media_volume:/usr/local/src/app/media
+        # Ensure the backend service starts after the database is ready
         depends_on:
         -   db
+        # Restart the service automatically unless manually stopped
         restart: unless-stopped
 
+    # Frontend service (React frontend served with Nginx)
     frontend:
         build:
+            # Define the build context (Dockerfile is located inside the 'frontend' directory)
             context: ./frontend
             dockerfile: Dockerfile
             args:
-                VITE_API_URL: ${VITE_API_URL}
+                # Pass API URL as an argument during the frontend build
+                VITE_API_URL: ${VITE_API_URL:-http://localhost/api}
+        # Use a specific image name for the frontend
         image: mhooker/shared_memories-frontend:latest
+        # Load environment variables from the .env file
         env_file:
         -   .env
         ports:
+        # Expose the frontend on port 80 (default HTTP port)
         -   "80:80"
         volumes:
+        # Mount the same static and media volumes to ensure frontend can access them
         -   static_volume:/usr/local/src/app/static
         -   media_volume:/usr/local/src/app/media
+        # Mount a custom Nginx configuration file inside the container
         -   ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
+        # Ensure the frontend starts after the backend is running
         depends_on:
         -   backend
+        # Restart automatically unless manually stopped
         restart: unless-stopped
 
+    # Database service (PostgreSQL)
     db:
+        # Use the official lightweight Alpine-based PostgreSQL image
         image: postgres:17.3-alpine
+        # Load environment variables from the .env file (for DB credentials)
         env_file:
         -   .env
         volumes:
+        # Mount a volume to persist database data across container restarts
         -   postgres_data:/var/lib/postgresql/data
+        # Restart automatically unless manually stopped
         restart: unless-stopped
 
+# Define persistent volumes for database storage, static files, and media uploads
 volumes:
-    postgres_data:
-    static_volume:
-    media_volume:
+    postgres_data:  # Stores database data to prevent data loss between restarts
+    static_volume:  # Stores static files (CSS, JS, etc.)
+    media_volume:   # Stores uploaded media files (images, videos, etc.)
