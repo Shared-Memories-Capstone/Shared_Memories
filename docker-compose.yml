@@ -1,6 +1,14 @@
 # Define the name of the Docker Compose project
 name: shared_memories
 
+networks:
+    proxy:
+        # `bridge` allows communication between containers connected to the same network
+        # while isolating them from other networks.
+        driver: bridge
+    internal:
+        driver: bridge
+
 services:
     # Backend service (Django)
     backend:
@@ -13,6 +21,10 @@ services:
         # Load environment variables from the .env file
         env_file:
         -   .env
+        # Allow communication on services on these networks
+        networks:
+        -   internal
+        -   proxy
         volumes:
         # Mount the .env file as read-only inside the container for environment variables
         -   .env:/usr/local/src/.env:ro
@@ -40,6 +52,9 @@ services:
         # Load environment variables from the .env file
         env_file:
         -   .env
+        # Allow communication on services on these networks
+        networks:
+        -   proxy
         ports:
         # Expose the frontend on port 80 (default HTTP port)
         -   "80:80"
@@ -62,6 +77,9 @@ services:
         # Load environment variables from the .env file (for DB credentials)
         env_file:
         -   .env
+        # Allow communication on services on these networks
+        networks:
+        -   internal
         volumes:
         # Mount a volume to persist database data across container restarts
         -   postgres_data:/var/lib/postgresql/data
