@@ -195,46 +195,87 @@ You will use `docker compose` to deploy the services, but you may want to build 
 1. Build the backend container (from backend dir):
 
     ```bash
-    docker build -t sm-backend:0.3.2 .
+    docker build -t sm-backend:latest .
     ```
 
-1. Run the backend container image (from backend dir):
+1. Run the backend container image (from project root):
+
+    On MacOS and Linux devices:
 
     ```bash
     docker run --name sm-backend \
-    --hostname backend \
-    --network shared_memories_net \
-    --env-file ../.env \
-    -d sm-backend:0.3.2
+        --hostname backend \
+        --network shared_memories_net \
+        --rm \
+        -p "8000:8000" \
+        -v $(pwd)/.env:/usr/local/src/.env \
+        sm-backend:latest
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker run --name sm-backend `
+        --hostname backend `
+        --network shared_memories_net `
+        --rm `
+        -p "8000:8000" `
+        -v "${PWD}/.env:/usr/local/src/.env" `
+        sm-backend:latest
     ```
 
 1. Build the frontend container (from frontend dir):
 
+    On MacOS and Linux devices:
+
     ```bash
     docker build \
-    --build-arg VITE_API_URL=http://localhost/api \
-    -t sm-frontend:0.3.2 .
+        --build-arg VITE_API_URL=http://localhost/api \
+        -t sm-frontend:latest .
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker build `
+        --build-arg VITE_API_URL="http://localhost/api" `
+        -t sm-frontend:latest .
     ```
 
 1. Run the frontend container image (from frontend dir):
 
+    On MacOS and Linux devices:
+
     ```bash
     docker run --name sm-frontend \
-    --hostname frontend \
-    --network shared_memories_net \
-    -p 80:80 \
-    -d sm-frontend:0.3.2
+        --hostname frontend \
+        --network shared_memories_net \
+        --rm \
+        -p "80:80" \
+        sm-frontend:latest
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker run `
+        --name sm-frontend `
+        --hostname frontend `
+        --network shared_memories_net `
+        --rm `
+        -p "80:80" `
+        sm-frontend:latest
     ```
 
 1. Run the official postgres container image (from project root):
 
     ```bash
     docker run --name sm-db \
-    --hostname db \
-    --network shared_memories_net \
-    --env-file .env \
-    -v postgres_data:/var/lib/postgresql/data \
-    -d postgres:17
+        --hostname db \
+        --network shared_memories_net \
+        --env-file .env \
+        -v postgres_data:/var/lib/postgresql/data \
+        -d postgres:17
     ```
 
 1. Run migrations on postgres container image (from project root):
@@ -261,9 +302,9 @@ To build the Docker container images that the server will pull, you need to crea
     ```bash
     # Build backend images for Apple Silicon and AMD64 Linux.
     docker buildx build --platform linux/amd64,linux/arm64 \
-    -t mhooker/shared_memories-backend:latest \
-    --push \
-    ./backend
+        -t mhooker/shared_memories-backend:latest \
+        --push \
+        ./backend
     ```
 
 1. Build, tag, and push your frontend image (from project root):
@@ -279,10 +320,10 @@ To build the Docker container images that the server will pull, you need to crea
     ```bash
     # Build frontend images for Apple Silicon and AMD64 Linux.
     docker buildx build --platform linux/amd64,linux/arm64 \
-    -t mhooker/shared_memories-frontend:latest \
-    --build-arg VITE_API_URL=$VITE_API_URL \
-    --push \
-    ./frontend
+        -t mhooker/shared_memories-frontend:latest \
+        --build-arg VITE_API_URL=$VITE_API_URL \
+        --push \
+        ./frontend
     ```
 
 ## GIT AID
@@ -382,11 +423,7 @@ pre-commit run --verbose
     docker rm sm-backend
     ```
 
-    Now that you've removed the container, execute the command to run the container again (from the backend dir):
-
-    ```bash
-    docker run --name=sm-backend -p 8000:8000 -d --env-file ../.env sm-backend:0.1.0
-    ```
+    Now that you've removed the container, execute the command to run the container again.
 
 ## Acknowledgements
 
