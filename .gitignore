@@ -132,6 +132,7 @@ celerybeat.pid
 .env.prod
 .env.dev
 .venv
+nginx-certbot.env
 env/
 venv/
 ENV/
