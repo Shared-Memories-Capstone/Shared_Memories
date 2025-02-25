@@ -55,6 +55,9 @@ services:
         # Allow communication on services on these networks
         networks:
         -   proxy
+        ports:
+        # Expose the frontend on port 80 (default HTTP port)
+        -   "80:80"
         volumes:
         # Mount the same static and media volumes to ensure frontend can access them
         -   static_volume:/usr/local/src/app/static:ro
@@ -83,40 +86,8 @@ services:
         # Restart automatically unless manually stopped
         restart: unless-stopped
 
-    # Nginx proxy to handle TLS termination
-    proxy:
-        build:
-            # Define the build context (Dockerfile is located inside the 'proxy' directory)
-            context: ./proxy
-            dockerfile: Dockerfile
-        # Use a specific image name for the proxy
-        image: mhooker/shared_memories-proxy:latest
-        # Specify when to start up the proxy service
-        depends_on:
-            frontend:
-                condition: service_healthy
-                restart: true
-        # Set environment variables (these values override values from env_files)
-        environment:
-        -   STAGING=0
-        # Load environment variables from the .env file
-        env_file:
-        -   ./proxy/nginx-certbot.env
-        # Allow communication on services on these networks
-        networks:
-        -   proxy
-        ports:
-        # Expose the proxy on port 80 (default HTTP port) and 443 (default HTTPS port)
-        -   "80:80"
-        -   "443:443"
-        # Restart automatically unless manually stopped
-        restart: always
-        volumes:
-        -   proxy_secrets:/etc/letsencrypt
-
 # Define persistent volumes for database storage, static files, and media uploads
 volumes:
     postgres_data:  # Stores database data to prevent data loss between restarts
     static_volume:  # Stores static files (CSS, JS, etc.)
     media_volume:   # Stores uploaded media files (images, videos, etc.)
-    proxy_secrets:  # Stores the TLS certificates for all domains
