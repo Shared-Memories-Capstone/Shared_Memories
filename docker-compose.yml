@@ -98,7 +98,7 @@ services:
                 restart: true
         # Set environment variables (these values override values from env_files)
         environment:
-        -   STAGING=0
+        -   STAGING=1
         # Load environment variables from the .env file
         env_file:
         -   ./proxy/nginx-certbot.env
