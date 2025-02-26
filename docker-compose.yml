@@ -46,7 +46,7 @@ services:
             dockerfile: Dockerfile
             args:
                 # Pass API URL as an argument during the frontend build
-                VITE_API_URL: ${VITE_API_URL:-http://localhost/api}
+                VITE_API_URL: ${VITE_API_URL:-/api}
         # Use a specific image name for the frontend
         image: mhooker/shared_memories-frontend:latest
         # Load environment variables from the .env file
