@@ -336,6 +336,16 @@ To build the Docker container images that the server will pull, you need to crea
         ./frontend
     ```
 
+1. Build, tag, and push your proxy image (from project root):
+
+    ```bash
+    # Build proxy images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+        -t mhooker/shared_memories-proxy:latest \
+        --push \
+        ./proxy
+    ```
+
 ## Pulling Docker Images
 
 To run the Docker container images on the server, you will need to pull the latest versions. We will pull the latest versions using a Docker compose file. These instructions assume you are connected to the server already via a local terminal or SSH.
