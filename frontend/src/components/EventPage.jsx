@@ -10,6 +10,8 @@ import { Button } from 'react-bootstrap';
 import UploadPhotoForm from './UploadPhotoForm.jsx';
 import ImageCarousel from './ImageCarousel.jsx';
 import LoadingSpinner from './LoadingSpinner.jsx';
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function EventPage() {
   const navigate = useNavigate();
@@ -33,11 +35,11 @@ export default function EventPage() {
       const timer = setTimeout(() => {
         setSuccess(null);
       }, 3000); // Message will disappear after 3 seconds
-      
+
       return () => clearTimeout(timer); // Cleanup timeout
     }
   }, [success]);
-  
+
     const fetchEventAndPhotos = async () => {
       try {
         if (!eventId) {
@@ -46,11 +48,11 @@ export default function EventPage() {
         }
         setImagesLoading(true);
         // Fetch event details
-        const eventResponse = await axios.get(`http://localhost:8000/api/events/${eventId}/`);
+        const eventResponse = await axios.get(`${API_URL}/events/${eventId}/`);
         setEvent(eventResponse.data);
 
         // Fetch photos
-        const photosResponse = await axios.get(`http://localhost:8000/api/photos/?event=${eventId}`);
+        const photosResponse = await axios.get(`${API_URL}/photos/?event=${eventId}`);
         setPhotos(photosResponse.data);
       } catch (error) {
         setError("Unable to load event content. Please try again later.");

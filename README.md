@@ -7,6 +7,8 @@
 - [Usage](#usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Deploying](#deploying)
+- [Publishing Docker Images](#publishing-docker-images)
 - [Git Aid](#git-aid)
 - [Pre-Commit Hook Troubleshooting](#pre-commit-hook-troubleshooting)
 - [Acknowledgements](#acknowledgements)
@@ -23,14 +25,35 @@
 1. Create and activate a virtual environment (from backend dir):
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows, use venv\Scripts\activate
+    python3 -m venv venv  # On Windows, uses `python -m venv venv`.
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`.
     ```
 
 1. Install Python requirements in virtual environment (from backend dir):
 
     ```bash
     pip install -r requirements.txt
+    ```
+
+1. Configure the environment variables (from project root):
+
+    ```bash
+    cp .env.dev.example .env # For deployment.
+    cp .env.prod.example .env  # OPTIONAL: For production. Will overwite deployment .env.
+    ```
+
+    Edit `.env` to include your Django secret key and other unique values.
+
+    OPTIONAL: If you need to generate a new secret key, run the following command and copy its output:
+
+    ```bash
+    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    ```
+
+    OPTIONAL: If you want to dynamically set the .env file for the backend, you can set a shell environment variable:
+
+    ```bash
+    export ENV_FILE=$(pwd)/.env.dev
     ```
 
 1. Install Node.js dependencies (from frontend dir):
@@ -99,7 +122,7 @@
 1. Run all tests (from project root dir):
 
     ```bash
-    make test  # run all of the backend and frontend tests
+    make test  # Linux and MacOS-only: run all of the backend and frontend tests
     ```
 
 ## Contributing
@@ -127,6 +150,297 @@
 
     ```bash
     git switch {branch_name}
+    ```
+
+## Deploying
+
+### Install the Development Environment
+
+Follow the instructions in the [Installation](#installation) section to establish your development environment. You will need the cloned repo to build your container images. Make sure you configure your `.env` for either development (e.g., `.env.dev.example`) or production (e.g., `.env.prod.example`).
+
+### Install Docker Desktop
+
+Follow the instructions on [Docker's "Get Docker Desktop" article](https://docs.docker.com/get-started/introduction/get-docker-desktop/) to install Docker on your device.
+
+### Running Docker Compose
+
+1. Build and start services using docker compose (from project root):
+
+    ```bash
+    docker compose up --build -d
+    ```
+
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it shared_memories-backend-1 python manage.py migrate
+    ```
+
+1. Tear down multi-container setup (from project root):
+
+    ```bash
+    docker compose down
+    ```
+
+### Individually building and running the frontend and backend for development
+
+You will use `docker compose` to deploy the services, but you may want to build and run the containers individually to test their Dockerfiles.
+
+1. Create the network so the containers can communicate (from project root):
+
+    ```bash
+    docker network create shared_memories_net
+    ```
+
+1. Build the backend container (from backend dir):
+
+    ```bash
+    docker build -t sm-backend:latest .
+    ```
+
+1. Run the backend container image (from project root):
+
+    On MacOS and Linux devices:
+
+    ```bash
+    docker run --name sm-backend \
+        --hostname backend \
+        --mount src=static_volume,dst=/usr/local/src/app/static \
+        --mount src=media_volume,dst=/usr/local/src/app/media \
+        --network shared_memories_net \
+        --rm \
+        -p "8000:8000" \
+        -v $(pwd)/.env:/usr/local/src/.env \
+        sm-backend:latest
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker run --name sm-backend `
+        --hostname backend `
+        --mount src=static_volume,dst=/usr/local/src/app/static `
+        --mount src=media_volume,dst=/usr/local/src/app/media `
+        --network shared_memories_net `
+        --rm `
+        -p "8000:8000" `
+        -v "${PWD}/.env:/usr/local/src/.env" `
+        sm-backend:latest
+    ```
+
+1. Build the frontend container (from frontend dir):
+
+    On MacOS and Linux devices:
+
+    ```bash
+    docker build \
+        --build-arg VITE_API_URL=http://localhost/api \
+        -t sm-frontend:latest .
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker build `
+        --build-arg VITE_API_URL="http://localhost/api" `
+        -t sm-frontend:latest .
+    ```
+
+1. Run the frontend container image (from frontend dir):
+
+    On MacOS and Linux devices:
+
+    ```bash
+    docker run --name sm-frontend \
+        --hostname frontend \
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly \
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly \
+        --network shared_memories_net \
+        --rm \
+        -p "80:80" \
+        sm-frontend:latest
+    ```
+
+    On Windows devices:
+
+    ```powershell
+    docker run `
+        --name sm-frontend `
+        --hostname frontend `
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly `
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly `
+        --network shared_memories_net `
+        --rm `
+        -p "80:80" `
+        sm-frontend:latest
+    ```
+
+1. Run the official postgres container image (from project root):
+
+    ```bash
+    docker run --name sm-db \
+        --hostname db \
+        --network shared_memories_net \
+        --env-file .env \
+        --rm \
+        -v postgres_data:/var/lib/postgresql/data \
+        -d postgres:17.3-alpine
+    ```
+
+1. Run migrations on postgres container image (from project root):
+
+    ```bash
+    docker exec -it sm-backend python manage.py migrate
+    ```
+
+## Publishing Docker Images
+
+To build the Docker container images that the server will pull, you need to create builds for the `linux/amd64` platform.
+
+1. Log in to Docker Hub
+
+    Before pushing, make sure you're logged into Docker Hub:
+
+    ```bash
+    docker login
+    ```
+
+    You'll be prompted for your Docker Hub username and password.
+
+1. Build, tag, and push your backend image (from project root):
+
+    ```bash
+    # Build backend images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+        -t mhooker/shared_memories-backend:latest \
+        --push \
+        ./backend
+    ```
+
+1. Build, tag, and push your frontend image (from project root):
+
+    Building the frontend requires you to provide a `VITE_API_URL` build arg. If this argument is not included, the site frontend will be built with the development backend URL (`http://localhost:8000/api`). You need to know where you'll deploy this image, but, in general, you should use either `http://localhost/api` (local production deployments) or `http://sharedmemories.org/api` (live production deployments).
+
+    ```bash
+     export VITE_API_URL=http://sharedmemories.org/api  # Live production deployment
+     ```
+
+     The build process will bake the `VITE_API_URL` value into the HTML and JS source code that Nginx will serve.
+
+    ```bash
+    # Build frontend images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+        -t mhooker/shared_memories-frontend:latest \
+        --build-arg VITE_API_URL=$VITE_API_URL \
+        --push \
+        ./frontend
+    ```
+
+1. Build, tag, and push your proxy image (from project root):
+
+    ```bash
+    # Build proxy images for Apple Silicon and AMD64 Linux.
+    docker buildx build --platform linux/amd64,linux/arm64 \
+        -t mhooker/shared_memories-proxy:latest \
+        --push \
+        ./proxy
+    ```
+
+## Pulling Docker Images
+
+To run the Docker container images on the server, you will need to pull the latest versions. We will pull the latest versions using a Docker compose file. These instructions assume you are connected to the server already via a local terminal or SSH.
+
+1. Create a test network:
+
+    ```bash
+    docker network create shared_memories_test
+    ```
+
+1. Pull the new backend image (from project root):
+
+    ```bash
+    docker pull mhooker/shared_memories-backend:latest
+    ```
+
+1. Run the new backend container on a different port from the currently running container:
+
+    ```bash
+    docker run --name shared_memories-backend-test \
+        --hostname backend \
+        --mount src=static_volume,dst=/usr/local/src/app/static \
+        --mount src=media_volume,dst=/usr/local/src/app/media \
+        --network shared_memories_test \
+        --rm \
+        -p "8081:8000" \
+        -v $(pwd)/.env:/usr/local/src/.env \
+        mhooker/shared_memories-backend:latest
+    ```
+
+1. Verify the new container is running correctly:
+
+    ```bash
+    docker logs shared_memories-backend-test
+    ```
+
+1. Test the new container returns expected results:
+
+    ```bash
+    curl http://localhost:8081/api/
+    ```
+
+    Stop the running backend test container if it succeeds and continue.
+
+1. Switch traffic to new image:
+
+    ```bash
+    docker compose up -d --no-deps backend
+    ```
+
+1. Run migrations on postgres container image from the new backend container:
+
+    ```bash
+    docker exec -it shared_memories-backend-1 python manage.py migrate
+    ```
+
+1. Pull the new frontend image (from project root):
+
+    ```bash
+    docker pull mhooker/shared_memories-frontend:latest
+    ```
+
+1. Run the new frontend container on a different port from the currently running container:
+
+    We are using the existing network created by docker compose so the frontend can talk to a live backend.
+
+    ```bash
+    docker run --name shared_memories-frontend-test \
+        --hostname frontend \
+        --mount src=static_volume,dst=/usr/local/src/app/static,readonly \
+        --mount src=media_volume,dst=/usr/local/src/app/media,readonly \
+        --network shared_memories_default \
+        --rm \
+        -p "8082:80" \
+        mhooker/shared_memories-frontend:latest
+    ```
+
+1. Verify the new container is running correctly:
+
+    ```bash
+    docker logs shared_memories-frontend-test
+    ```
+
+1. Test the new container returns expected results:
+
+    ```bash
+    curl http://localhost:8082/api/
+    ```
+
+    Stop the running frontend test container if it succeeds and continue.
+
+1. Switch traffic to new image:
+
+    ```bash
+    docker compose up -d --no-deps frontend
     ```
 
 ## GIT AID
@@ -213,6 +527,21 @@ If a hook is failing, check logs with:
 pre-commit run --verbose
 ```
 
+## Docker Troubleshooting
+
+1. Error when running the backend container image:
+
+    > docker: Error response from daemon: Conflict. The container name "/sm-backend" is already in use by container "container-id". You have to remove (or rename) that container to be able to reuse that name.
+
+    Run the following command to remove the container. NOTE: Any changes to the container image will be lost.
+
+    ```bash
+    docker stop sm-backend
+    docker rm sm-backend
+    ```
+
+    Now that you've removed the container, execute the command to run the container again.
+
 ## Acknowledgements
 
-Creted by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.
+Created by Kaylee Burch, Victor Hong, Michael Hooker, and Cory Nagel.

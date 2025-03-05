@@ -10,6 +10,7 @@ djangorestframework==3.14.0
 drf-spectacular==0.27.1
 filelock==3.17.0
 flake8==7.1.1
+gunicorn==23.0.0
 identify==2.6.6
 inflection==0.5.1
 jsonschema==4.23.0
@@ -18,13 +19,17 @@ markdown-it-py==3.0.0
 mccabe==0.7.0
 mdurl==0.1.2
 nodeenv==1.9.1
+packaging==24.2
 pbr==6.1.0
 pillow==11.1.0
 platformdirs==4.3.6
 pre_commit==4.1.0
+psycopg==3.2.4
+psycopg-binary==3.2.4
 pycodestyle==2.12.1
 pyflakes==3.2.0
 Pygments==2.19.1
+python-decouple==3.8
 pytz==2025.1
 PyYAML==6.0.2
 referencing==0.36.2

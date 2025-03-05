@@ -10,30 +10,41 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from decouple import Config, Csv, RepositoryEnv
 from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# PROJECT_ROOT is one level up.
+PROJECT_ROOT = BASE_DIR.parent
 
+# Allow overriding the env file via an ENV_FILE environment variable if needed,
+# otherwise default to PROJECT_ROOT/.env
+env_file_path = os.getenv("ENV_FILE", PROJECT_ROOT / ".env")
+
+if not Path(env_file_path).exists():
+    raise FileNotFoundError(f"Environment file not found at {env_file_path}")
+
+config = Config(RepositoryEnv(env_file_path))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    "django-insecure-ws=onwoz30oeee8r1r8@6-&5&c2ms=i61-5h*c(=0jnp7=i*$w"  # nosec
-)
+SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.get("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config.get("ALLOWED_HOSTS", cast=Csv())
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
+    "http://localhost",
+    "http://sharedmemories.org",
 ]
 
 # For development only - more specific settings are better for production
@@ -121,12 +132,26 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DEVELOPMENT = config.get("DEVELOPMENT", cast=bool, default=True)
+
+if DEVELOPMENT:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config.get("DB_NAME"),
+            "USER": config.get("DB_USER"),
+            "PASSWORD": config.get("POSTGRES_PASSWORD"),
+            "HOST": config.get("DB_HOST", default="db"),
+            "PORT": config.get("DB_PORT", default="5432"),
+        }
+    }
 
 
 # Password validation

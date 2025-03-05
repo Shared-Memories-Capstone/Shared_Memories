@@ -3,7 +3,8 @@ import { Card, Form, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+// Use Vite's env variable (make sure it’s prefixed with VITE_)
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 function AccessCodeCard() {
   const [accessCode, setAccessCode] = useState('');
   const [error, setError] = useState('');
@@ -12,7 +13,7 @@ function AccessCodeCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8000/api/events/by-access-code/${accessCode}`);
+      const response = await axios.get(`${API_URL}/events/by-access-code/${accessCode}`);
       if (response.data.status === 'success') {
         // Navigate to event page with event ID
         navigate(`/event-page?event=${response.data.event.event_id}`);
